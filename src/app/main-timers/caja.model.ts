@@ -1,4 +1,4 @@
-export interface Timer{
+export interface Caja{
     id: string;
     timerValue: string;
 }

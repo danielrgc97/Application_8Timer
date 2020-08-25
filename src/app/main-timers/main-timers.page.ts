@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Timer } from './timer.model';
+import { Caja } from './caja.model';
+import { CajasService } from './cajas.service';
 
 @Component({
   selector: 'app-main-timers',
@@ -7,19 +8,11 @@ import { Timer } from './timer.model';
   styleUrls: ['./main-timers.page.scss'],
 })
 export class MainTimersPage implements OnInit {
-  timers: Timer[] = [
-    {
-      id: '1',
-      timerValue: '10'
-    },
-    {
-      id: '2',
-      timerValue: '5'
-    }
-  ];
+  cajas: Caja[];
 
-  constructor() { }
+  constructor(private cajasService: CajasService) { }
 
   ngOnInit() {
+    this.cajas = this.cajasService.getAllCajas();
   }
 }
