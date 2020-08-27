@@ -11,18 +11,9 @@ export class CajasService {
   cajas: Caja[] = [];
   json = [];
 
-  constructor() {
-    // this.json = [
-    //   {id: '1', nombre: 'jon', timerValue: '10'},
-    //   {id: '2', nombre: 'miguel', timerValue: '10'},
-    //   {id: '3', nombre: 'kike', timerValue: '10'}
-    // ];
-  }
+  constructor() {  }
 
-  getAllCajas(){
-    this.getObjects();
-    return [...this.cajas];
-  }
+  // Funciones de gestion de almacenamiento
 
   async getObjects() {
     const j = await Storage.get({ key: '8Timer' });
@@ -46,9 +37,13 @@ export class CajasService {
     });
   }
 
+  // Funciones de la logica cajas.service
+  
+  getAllCajas(){
+    return [...this.cajas];
+  }
 
   addCaja(nombre: string, timerValue: string){
-    this.getObjects();
     const id = '' + this.cajas.length;
     this.cajas.push({ id , nombre, timerValue});
     this.setObjects();
