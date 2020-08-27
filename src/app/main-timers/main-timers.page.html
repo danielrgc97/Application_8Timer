@@ -5,11 +5,17 @@
 </ion-header>
 
 <ion-content>
-  bbb
+
   <ion-list>
-  
+    <ion-item *ngFor="let c of cajas">
+      <ion-label>
+        {{c.nombre}}
+        <p>{{c.timerValue}}</p>
+      </ion-label>
+    </ion-item>
   </ion-list>
 
-  <ion-button (click)="testing()">Add items</ion-button>
+  <ion-button (click)="a()">A</ion-button>
+  <ion-button (click)="b()">B</ion-button>
 
 </ion-content>
