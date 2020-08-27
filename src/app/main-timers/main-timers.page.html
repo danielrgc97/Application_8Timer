@@ -7,16 +7,28 @@
     <ion-item *ngFor="let c of cajas">
       <ion-label>
         {{c.nombre}}
-        <p>{{c.timerValue}}</p>
+        <p>{{c.countingValue}}</p>
       </ion-label>
     </ion-item>
   </ion-list>
 
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="createCaja()">
+    <ion-fab-button (click)="createCajaAlert()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button (click)="a()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  {{timeLeft}}
+  <button (click)='startTimer()'>Start Timer</button>
+<button (click)='pauseTimer()'>Pause</button>
+
+  
 
 </ion-content>

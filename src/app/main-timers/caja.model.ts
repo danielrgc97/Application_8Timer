@@ -5,4 +5,5 @@ export interface Caja{
     nombre: string;
     timerValue: number;
     countingValue: number;
+    counting: boolean;
 }

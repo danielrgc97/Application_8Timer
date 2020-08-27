@@ -11,15 +11,24 @@ import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/cor
   styleUrls: ['./main-timers.page.scss'],
 })
 export class MainTimersPage implements OnInit {
-  cajas: Caja[];
-  json = [];
-  cajasService: CajasService;
 
-  constructor( public alertController: AlertController) {}
+  cajas: Caja[];
+  timeLeft: number = 60;
+  interval;
+
+  constructor( public alertController: AlertController, private cajasService: CajasService) {}
 
   ngOnInit() {
     this.cajasService.getObjects().then( _ => {
-    this.cajas = this.cajasService.getAllCajas();
+      this.cajas = this.cajasService.getAllCajas();
+    }).then( _ => {
+      setInterval(() => {
+        for (const i of this.cajas){
+          if ( i.counting === true ){
+            i.countingValue--;
+          }
+        }
+      }, 1000);
     });
   }
 
@@ -47,7 +56,7 @@ export class MainTimersPage implements OnInit {
           {
             text: 'Create',
             handler: (data) => {
-              this.cajasService.addCaja(data.name, parseInt(data.time,10));
+              this.cajasService.addCaja(data.name, parseInt(data.time, 10));
               this.ngOnInit();
             }
           }
@@ -57,27 +66,32 @@ export class MainTimersPage implements OnInit {
       await alert.present();
   }
 
-  // startTimer(duration, display) {
+  a(){
+    this.cajas[0].counting = true;
+  }
 
-  //     let timer = duration;
-  //     setInterval(function () {
-  //       let  minutes = parseInt(timer / 60, 10);
-  //       let  seconds = parseInt(timer % 60, 10);
+  seconds() {
+    if ( this.cajas != null ){
+    this.cajas[0].countingValue--;
+    }
+    console.log(this.cajas);
+  }
 
-  //         minutes = minutes < 10 ? "0" + minutes : minutes;
-  //         seconds = seconds < 10 ? "0" + seconds : seconds;
+startTimer() {
+    this.interval = setInterval(() => {
+      if(this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        this.timeLeft = 60;
+      }
+    },1000)
+  }
 
-  //         display.textContent = minutes + ":" + seconds;
+  pauseTimer() {
+    clearInterval(this.interval);
+  }
 
-  //         if (--timer < 0) {
-  //             timer = duration;
-  //         }
-  //     }, 1000);
-  //     <body>
-  //     <div>Registration closes in <span id="time">05:00</span> minutes!</div>
-  //     </body>
 
-  // }
 
 
 }
