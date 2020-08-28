@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { MainTimersPageRoutingModule } from './main-timers-routing.module';
 
 import { MainTimersPage } from './main-timers.page';
+import { MenuExampleComponent } from '../menu-example/menu-example.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { MainTimersPage } from './main-timers.page';
     IonicModule,
     MainTimersPageRoutingModule
   ],
-  declarations: [MainTimersPage]
+  declarations: [MainTimersPage, MenuExampleComponent]
 })
 export class MainTimersPageModule {}

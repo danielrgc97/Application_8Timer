@@ -28,6 +28,12 @@ export class CajasService {
     this.setObjects();
   }
 
+  editCaja(id: number, nombre: string, timerValue: number){
+    this.cajas[id].nombre = nombre;
+    this.cajas[id].timerValue = timerValue;
+    this.cajas[id].countingValue = timerValue;
+  }
+
   volcarCajas(cs: Caja[]){
     this.cajas = [];
     for ( let i = 0 ; i < cs.length ; i++){

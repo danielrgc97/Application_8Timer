@@ -25,17 +25,16 @@ export class MainTimersPage implements OnInit {
   async createCajaAlert(){
       const alert = await this.alertController.create({
         header: 'Create new Timer',
-        message: 'Insert the value of the timer in seconds',
         inputs: [
           {
             name: 'name',
             type: 'text',
-            placeholder: 'MyTimerName'
+            placeholder: 'Name of the timer'
           },
           {
             name: 'time',
             type: 'number',
-            placeholder: '15'
+            placeholder: 'Seconds: 15, 100...'
           }
         ],
         buttons: [
@@ -55,6 +54,49 @@ export class MainTimersPage implements OnInit {
 
       await alert.present();
   }
+
+  async editCajaAlert(id: number){
+    const alert = await this.alertController.create({
+      header: 'Configuring',
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: this.cajas[id].nombre
+        },
+        {
+          name: 'time',
+          type: 'number',
+          placeholder: 'seconds'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Delete',
+          handler: (data) => {
+            this.cajasService.deleteCaja(data.id);
+            this.ngOnInit();
+          }
+        },
+        {
+          text: 'Edit',
+          handler: (data) => {
+            console.log(data.name);
+            if ( data.name === "" || data.number === ""){
+              this.editCajaAlert(id);
+            }else{
+              this.cajasService.editCaja(id, data.name, parseInt(data.time, 10));
+              this.cajasService.setObjects();
+              this.cajas[id].countingValue = data.time;
+              this.ngOnInit();
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+}
 
   playpauseButton(id: number){
     if ( this.cajas[id].counting === true ){
