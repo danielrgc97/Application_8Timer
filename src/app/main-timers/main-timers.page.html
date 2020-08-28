@@ -4,10 +4,15 @@
 <ion-content>
   
   <ion-list>
-    <ion-item *ngFor="let c of cajas">
+    <ion-item *ngFor="let c of cajas;let i = index">
       <ion-label>
-        {{c.nombre}}
-        <p>{{c.countingValue}}</p>
+      <p> {{c.nombre}} </p>
+        {{c.countingValue}} 
+      </ion-label>
+      <ion-label>
+        <ion-button slot="end" (click)="playpauseButton(i)"><ion-icon name="play-outline"></ion-icon></ion-button>
+        <ion-button slot="end"><ion-icon name="refresh-outline"></ion-icon></ion-button>
+        <ion-button slot="end" (click)="deleteButton(i)"><ion-icon name="construct-outline"></ion-icon></ion-button>
       </ion-label>
     </ion-item>
   </ion-list>

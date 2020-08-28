@@ -66,6 +66,18 @@ export class MainTimersPage implements OnInit {
       await alert.present();
   }
 
+  playpauseButton(id: number){
+    if ( this.cajas[id].counting === false ){
+      this.cajas[id].counting = true;
+    } else{
+      this.cajas[id].counting = false;
+    }
+  }
+
+  deleteButton (id: number){
+    this.cajasService.deleteCaja(id);
+    this.cajas = this.cajasService.getAllCajas();
+  }
 
 
 
