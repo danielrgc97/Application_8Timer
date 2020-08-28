@@ -6,4 +6,5 @@ export interface Caja{
     timerValue: number;
     countingValue: number;
     counting: boolean;
+    interval;
 }

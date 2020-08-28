@@ -13,22 +13,12 @@ import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/cor
 export class MainTimersPage implements OnInit {
 
   cajas: Caja[];
-  timeLeft: number = 60;
-  interval;
 
   constructor( public alertController: AlertController, private cajasService: CajasService) {}
 
   ngOnInit() {
     this.cajasService.getObjects().then( _ => {
       this.cajas = this.cajasService.getAllCajas();
-    }).then( _ => {
-      setInterval(() => {
-        for (const i of this.cajas){
-          if ( i.counting === true ){
-            i.countingValue--;
-          }
-        }
-      }, 1000);
     });
   }
 
@@ -67,10 +57,14 @@ export class MainTimersPage implements OnInit {
   }
 
   playpauseButton(id: number){
-    if ( this.cajas[id].counting === false ){
-      this.cajas[id].counting = true;
-    } else{
+    if ( this.cajas[id].counting === true ){
+      clearInterval(this.cajas[id].interval);
       this.cajas[id].counting = false;
+    } else{
+      this.cajas[id].counting = true;
+      this.cajas[id].interval = setInterval(() => {
+        --this.cajas[id].countingValue;
+      }, 1000);
     }
   }
 
