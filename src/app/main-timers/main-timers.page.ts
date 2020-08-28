@@ -58,23 +58,30 @@ export class MainTimersPage implements OnInit {
 
   playpauseButton(id: number){
     if ( this.cajas[id].counting === true ){
-      clearInterval(this.cajas[id].interval);
-      this.cajas[id].counting = false;
+      this.pause(id);
     } else{
-      this.cajas[id].counting = true;
-      this.cajas[id].interval = setInterval(() => {
-        --this.cajas[id].countingValue;
-        if ( this.cajas[id].countingValue < 0){
-          this.cajas[id].countingValue = this.cajas[id].timerValue;
-          this.playpauseButton(id);
-        }
-      }, 1000);
+      this.play(id);
     }
+  }
+
+  play(id: number){
+    this.cajas[id].counting = true;
+    this.cajas[id].interval = setInterval(() => {
+      --this.cajas[id].countingValue;
+      if ( this.cajas[id].countingValue < 0){
+        this.cajas[id].countingValue = this.cajas[id].timerValue;
+        this.playpauseButton(id);
+      }
+    }, 1000);
+  }
+  pause(id: number){
+    clearInterval(this.cajas[id].interval);
+    this.cajas[id].counting = false;
   }
 
   resetButton(id: number){
     this.cajas[id].countingValue = this.cajas[id].timerValue;
-    this.playpauseButton(id);
+    this.pause(id);
   }
 
   deleteButton (id: number){

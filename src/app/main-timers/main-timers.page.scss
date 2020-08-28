@@ -9,10 +9,11 @@ ion-content{
     height: 100px;
     width: 80%;
     left: 10%;
+    border-radius: 25px;
+    border: 7px solid #e0e0e0;
   }
 #name {
   position: absolute;
-  background-color: rgb(255, 255, 255);
   height: 30px;
   width: 80%;
   left: 10%;
@@ -21,21 +22,39 @@ ion-content{
 
 #time{
   position: absolute;
-  background-color: rgb(255, 255, 255);
-  top: 30px;
-  width: 30%;
-  height: 70px;
+  top: 20px;
+  width: 50%;
   right: 50%;
   font-size: 40px;
+  text-align: center;
 }
 #buttons{
   position: absolute;
-  background-color: rgb(255, 255, 255);
   top: 30px;
-  width: 50%;
-  height: 70px;
-  left: 50%;
+  width: 55%;
+  height: 45px;
+  left: 45%;
 }
 div{
-  font-family: "Times New Roman", Times, serif;
+  // font-family: "Times New Roman", Times, serif;
+  font-family: "Arial Black", Gadget, sans-serif;
+  text-transform: uppercase ;
+  font-weight: 900;
+}
+ul {
+  height: 90%;
+  position: absolute;
+  width: 110%;
+  right: 0px;
+  list-style-type: none;
+}
+
+.center {
+  
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top:-7px;
+  text-align:center;
+
 }
