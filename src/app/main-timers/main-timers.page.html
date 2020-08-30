@@ -6,20 +6,18 @@
 
 <ion-content>
   
-  <div id="lista">
-    <dl>
-      <dt *ngFor="let c of cajas;let i = index">
-        <div id="container">
-          <div id = "name">{{c.nombre}}</div>
-          <div id = "time">{{c.countingValue}} </div>
-          <div id = "buttons">
+  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+    
+        <div class="container" *ngFor="let c of cajas;let i = index" cdkDrag>
+          <div class = "name">{{c.nombre}}</div>
+          <div class = "time">{{c.countingValue}} </div>
+          <div class = "buttons">
             <ion-button size="small" (click)="playpauseButton(i)"><ion-icon name="play-outline"></ion-icon></ion-button>
             <ion-button size="small" (click)="resetButton(i)"><ion-icon name="refresh-outline"></ion-icon></ion-button>
             <ion-button size="small" (click)="editCajaAlert(i)"><ion-icon name="construct-outline"></ion-icon></ion-button>
           </div>
         </div>
-      </dt>
-    </dl>  
+        
   </div>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">

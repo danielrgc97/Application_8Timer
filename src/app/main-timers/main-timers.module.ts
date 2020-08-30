@@ -8,13 +8,15 @@ import { MainTimersPageRoutingModule } from './main-timers-routing.module';
 
 import { MainTimersPage } from './main-timers.page';
 import { MenuExampleComponent } from '../menu-example/menu-example.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    MainTimersPageRoutingModule
+    MainTimersPageRoutingModule,
+    DragDropModule
   ],
   declarations: [MainTimersPage, MenuExampleComponent]
 })

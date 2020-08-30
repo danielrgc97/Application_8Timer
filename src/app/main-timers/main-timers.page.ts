@@ -2,10 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Caja } from './caja.model';
 import { CajasService } from './cajas.service';
 import { AlertController } from '@ionic/angular';
-
-import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
-import * as $ from 'jquery';
-
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-main-timers',
@@ -65,7 +62,7 @@ export class MainTimersPage implements OnInit {
 
   async editCajaAlert(id: number){
     const alert = await this.alertController.create({
-      header: 'Configuring',
+      header: 'Configure',
       inputs: [
         {
           name: 'name',
@@ -140,7 +137,11 @@ export class MainTimersPage implements OnInit {
     this.cajas = this.cajasService.getAllCajas();
   }
 
+  // Drag and drop
 
+  drop(event: CdkDragDrop<string[]>) {
+    // moveItemInArray(this.cajas, event.previousIndex, event.currentIndex);
+  }
 
 
 
