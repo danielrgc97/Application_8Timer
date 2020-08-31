@@ -12,6 +12,10 @@ export class MenuPage implements OnInit {
     {
       name: 'timers',
       url: '/menu/main-timers'
+    },
+    {
+      name: 'more timers',
+      url: '/menu/main-timers'
     }
   ];
 

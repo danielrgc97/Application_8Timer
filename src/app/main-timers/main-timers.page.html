@@ -1,17 +1,36 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-button slot="start">
+<ion-header >
+  <ion-toolbar color="primary">
+    <ion-button slot="start" fill="clear" color="light">
       <ion-menu-button></ion-menu-button>
     </ion-button>
+    <ion-title mode=ios>
+      <ion-icon class="topIcon" src="../../assets/icon/full-white.svg"> </ion-icon>
+    </ion-title>
+      
+    
   </ion-toolbar>
   <!-- <div id="topIcon">
     <img  width="60px" height="60px" src="../../assets/icon/white-over-black.png">
   </div> -->
 
 </ion-header>
-<ion-content padding class="getstart">
+<ion-content class="getstart">
   
-  <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+  <dl class="list">
+    <dt class="container" *ngFor="let c of cajas;let i = index" cdkDrag>
+      <div class="subcontainer">
+        <div class = "name">{{c.nombre}}</div>
+        <div class = "time">{{c.countingValue}}:{{c.countingValue}} </div>
+        <div class = "buttons">
+          <ion-button color="dark" fill="clear" size="small" (click)="playpauseButton(i)"><ion-icon class="icon-button" name="play-outline"></ion-icon></ion-button>
+          <ion-button color="dark" fill="clear" size="small" (click)="resetButton(i)"><ion-icon class="icon-button" name="refresh-outline"></ion-icon></ion-button>
+          <ion-button color="dark" fill="clear" size="small" (click)="editCajaAlert(i)"><ion-icon class="icon-button" name="settings-outline"></ion-icon></ion-button>
+        </div>
+      </div>
+    </dt>
+  </dl>
+
+  <!-- <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
     <div class="container" *ngFor="let c of cajas;let i = index" cdkDrag>
       <div class="subcontainer">
         <div class = "name">{{c.nombre}}</div>
@@ -23,7 +42,8 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="createCajaAlert()">
       <ion-icon name="add"></ion-icon>

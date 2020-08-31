@@ -1,16 +1,12 @@
 // Toolbar
 
-#topIcon {
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top:0px;
-  text-align:center;
+.list div:nth-child(1) {
+  margin-top: 60px;
 }
-.example-list div:nth-child(1) {
-  margin-top: 70px;
+.topIcon{
+  margin-top: 5px;
+  font-size: 104px;
 }
-
 // Body
 
 ion-content {
@@ -18,21 +14,17 @@ ion-content {
 }
 
 // List
-.example-list div:nth-last-child(1) {
+
+.list div:nth-last-child(1) {
   margin-bottom: 70px;
 }
 
 // List elements
 
-div{
-  // font-family: "Times New Roman", Times, serif;
-  font-family: "Arial Black", Gadget, sans-serif;
-  text-transform: uppercase ;
-  font-weight: 900;
-}
+
 .container{
   position: relative;
-  height: 90px;
+  height: 75px;
   width: 95%;
   left: 2.5%;
   border-radius: 25px;
@@ -41,34 +33,44 @@ div{
   position: absolute;
   background-color: rgb(255, 255, 255);
   top: -70px;
-  height: 85px;
+  height: 70px;
   width: 100%;
   left: 0%;
   border-radius: 10px;
 }
 .name {
+  font-family: "Arial Black", Gadget, sans-serif;
+  text-transform: uppercase ;
+  font-weight: 100;
+  // background-color: darkblue;
+
   position: absolute;
-  bottom: 55px;
+  bottom: 33px;
   height: 30px;
-  width: 80%;
-  left: 10%;
+  width: 45%;
+  left: 55%;
   text-align: center;
 }
 .time{
   position: absolute;
-  top: 20px;
-  width: 50%;
-  left: 0px;
+  // background-color: darkcyan;
+  font-weight: 100;
+  top: 13px;
+  width: 40%;
+  left: 15%;
   font-size: 40px;
   text-align: center;
 }
 .buttons{
   position: absolute;
-  top: 35px;
-  width: 50%;
+  top: 30px;
+  width: 45%;
   height: 45px;
-  left: 50%;
+  left: 55%;
   text-align:center;
+}
+.icon-button {
+  font-size: 25px;
 }
 
 
