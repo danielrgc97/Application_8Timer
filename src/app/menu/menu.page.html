@@ -1,9 +1,21 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>menu</ion-title>
-  </ion-toolbar>
-</ion-header>
+<!-- <ion-split-pane> -->
+  <ion-menu contentId="content">
+    <ion-header>
+      <ion-title>
+        Hola
+      </ion-title>
+    </ion-header>
+  </ion-menu>
 
-<ion-content>
-
-</ion-content>
+  <ion-content>
+    <ion-list>
+      <ion-menu-toggle autohide="false" *ngFor="let o of options">
+        <ion-item [routerLink]="o.url" routerDirection="root">
+          {{o.name}}
+        </ion-item>
+      </ion-menu-toggle>
+    </ion-list>
+  </ion-content>
+  
+  <ion-router-outlet id="content" main></ion-router-outlet>
+<!-- </ion-split-pane> -->

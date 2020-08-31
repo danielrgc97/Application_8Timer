@@ -5,8 +5,18 @@ import { MenuPage } from './menu.page';
 
 const routes: Routes = [
   {
+    path: 'menu',
+    component: MenuPage,
+    children: [
+      {
+        path: 'main-timers',
+        loadChildren: () => import('../main-timers/main-timers.module').then( m => m.MainTimersPageModule)
+      },
+    ]
+  },
+  {
     path: '',
-    component: MenuPage
+    redirectTo: '/menu/main-timers'
   }
 ];
 
