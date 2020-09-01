@@ -50,7 +50,7 @@ export class MainTimersPage implements OnInit {
             role: 'cancel'
           },
           {
-            text: 'Create',
+            text: 'Confirm',
             handler: (data) => {
               if ( data.name === "" || data.time === "" ){
                 this.createCajaAlert();
@@ -90,7 +90,7 @@ export class MainTimersPage implements OnInit {
           }
         },
         {
-          text: 'Edit',
+          text: 'Confirm',
           handler: (data) => {
             console.log(data.number);
             if ( data.name === "" || data.time === "" ){
