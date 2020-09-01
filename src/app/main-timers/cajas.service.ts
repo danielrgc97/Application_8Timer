@@ -18,8 +18,14 @@ export class CajasService {
     return [...this.cajas];
   }
 
-  addCaja(nombre: string, timerValue: number){
-    this.cajas.push({ id: this.cajas.length, nombre, timerValue, countingValue: timerValue, counting: false, interval: null});
+  addCaja(nombre: string, timerValue: number, role: string){
+    this.cajas.push({
+      id: this.cajas.length,
+      nombre, timerValue,
+      countingValue: timerValue,
+      counting: false,
+      interval: null,
+      role});
     this.setObjects();
   }
 

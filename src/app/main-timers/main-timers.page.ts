@@ -12,6 +12,7 @@ import {CdkDragDrop} from '@angular/cdk/drag-drop';
 export class MainTimersPage implements OnInit {
 
   cajas: Caja[];
+  showGroup = true;
 
   constructor( public alertController: AlertController, private cajasService: CajasService) {}
 
@@ -36,6 +37,11 @@ export class MainTimersPage implements OnInit {
             name: 'time',
             type: 'number',
             placeholder: 'Seconds: 15, 100...'
+          },
+          {
+            name: 'role',
+            type: 'text',
+            value: 'caja'
           }
         ],
         buttons: [
@@ -49,7 +55,7 @@ export class MainTimersPage implements OnInit {
               if ( data.name === "" || data.time === "" ){
                 this.createCajaAlert();
               }else{
-                this.cajasService.addCaja(data.name, parseInt(data.time, 10));
+                this.cajasService.addCaja(data.name, parseInt(data.time, 10), data.role);
                 this.ngOnInit();
               }
             }
@@ -112,7 +118,6 @@ export class MainTimersPage implements OnInit {
       this.play(id);
     }
   }
-
   play(id: number){
     this.cajas[id].counting = true;
     this.cajas[id].interval = setInterval(() => {

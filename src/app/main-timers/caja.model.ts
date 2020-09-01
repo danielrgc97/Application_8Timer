@@ -7,4 +7,5 @@ export interface Caja{
     countingValue: number;
     counting: boolean;
     interval;
+    role: string;
 }

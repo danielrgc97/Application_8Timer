@@ -1,7 +1,7 @@
 // Toolbar
 
 .list div:nth-child(1) {
-  margin-top: 60px;
+  margin-top: 40px;
 }
 .topIcon{
   margin-top: 5px;
@@ -16,16 +16,24 @@ ion-content {
 
 // List
 
-.list div:nth-last-child(1) {
+.list div:nth-last-child(0) {
   margin-bottom: 70px;
 }
 
 // List elements
 
 
-.container{
+.caja{
   position: relative;
   height: 75px;
+  width: 95%;
+  left: 2.5%;
+  border-radius: 25px;
+}
+.group{
+  background-color: darkcyan;
+  position: relative;
+  height: 30px;
   width: 95%;
   left: 2.5%;
   border-radius: 25px;
@@ -68,6 +76,10 @@ ion-content {
 }
 .icon-button {
   font-size: 25px;
+}
+.groupName{
+  position: relative;
+  height: 150px;
 }
 
 
