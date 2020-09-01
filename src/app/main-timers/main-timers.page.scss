@@ -10,7 +10,8 @@
 // Body
 
 ion-content {
-  --background: url(../../assets/images/surf-wallpaper.jpeg) no-repeat center/cover fixed;
+  --ion-background-color: var(--ion-color-primary);
+  // --background: url(../../assets/images/surf-wallpaper.jpeg) no-repeat center/cover fixed;
 }
 
 // List
@@ -31,7 +32,7 @@ ion-content {
 }
 .subcontainer {
   position: absolute;
-  background-color: #f4f5f8;
+  background-color: var(--ion-color-light);
   top: -70px;
   height: 70px;
   width: 100%;
@@ -39,11 +40,8 @@ ion-content {
   border-radius: 10px;
 }
 .name {
-  font-family: "Arial Black", Gadget, sans-serif;
   text-transform: uppercase ;
-  font-weight: 100;
-  // background-color: darkblue;
-
+  font-weight: 300;
   position: absolute;
   bottom: 33px;
   height: 30px;
@@ -53,7 +51,6 @@ ion-content {
 }
 .time{
   position: absolute;
-  // background-color: darkcyan;
   font-weight: 100;
   top: 13px;
   width: 40%;
