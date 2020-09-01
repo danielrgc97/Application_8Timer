@@ -4,7 +4,7 @@
       <ion-menu-button color="light"></ion-menu-button>
     </ion-button>
     <ion-title mode=ios>
-      <ion-icon class="topIcon" src="../../assets/icon/full-white-empty.svg"> </ion-icon>
+      <ion-icon class="topIcon" src="../../assets/icon/white-over-black.svg"> </ion-icon>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -13,21 +13,21 @@
 <ion-content class="getstart">
   <div cdkDropList class="list">
     <!-- Lista con 2 tipos elementos -->
-    <div *ngFor="let c of cajas;let i = index" class="{{c.role}}" cdkDrag>
+    <div *ngFor="let c of cajas;let i = index; let last = last" class="{{c.type}}" cdkDrag>
       <!-- Tipo cajas -->
-      <div *ngIf="c.role==='caja'">
+      <div *ngIf="c.type==='timer'">
         <div class = "name">{{c.nombre}}</div>
         <div class = "time">{{c.countingValue}}:{{c.countingValue}} </div>
         <div class = "buttons">
-          <ion-button color="dark" fill="clear" size="small" (click)="playpauseButton(i)"><ion-icon class="caja-buttons" name="play-outline"></ion-icon></ion-button>
-          <ion-button color="dark" fill="clear" size="small" (click)="resetButton(i)"><ion-icon class="caja-buttons" name="refresh-outline"></ion-icon></ion-button>
-          <ion-button color="dark" fill="clear" size="small" (click)="editCajaAlert(i)"><ion-icon class="caja-buttons" name="settings-outline"></ion-icon></ion-button>
+          <ion-button color="dark" fill="clear" size="small" (click)="playpause(i)"><ion-icon class="caja-buttons" name="play-outline"></ion-icon></ion-button>
+          <ion-button color="dark" fill="clear" size="small" (click)="reset(i)"><ion-icon class="caja-buttons" name="refresh-outline"></ion-icon></ion-button>
+          <ion-button color="dark" fill="clear" size="small" (click)="editCajaTimerAlert(i)"><ion-icon class="caja-buttons" name="settings-outline"></ion-icon></ion-button>
         </div>
       </div>
       <!-- Tipo cycle -->
-      <div *ngIf="c.role==='cycle'">
+      <div *ngIf="c.type==='circuit'">
           <ion-button fill="clear" size="small"><ion-icon color="light" name="chevron-forward-outline"></ion-icon></ion-button>
-          <span class="cycleNombre">Cycle 1</span>
+          <span class="circuitNombre"> {{c.groupName}} </span><span class="circuitLaps"> x {{c.groupLaps}} Laps </span>
       </div>
     <!--  -->
     </div>
@@ -51,8 +51,8 @@
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button id="btn" color="secondary"><ion-icon name="add" color="primary"></ion-icon></ion-fab-button>
     <ion-fab-list side="top">
-      <ion-fab-button color="secondary" data-desc="Circuit of timers"><ion-icon name="flag" color="primary"></ion-icon></ion-fab-button>
-      <ion-fab-button color="secondary" (click)="createCajaAlert()" data-desc="Timer"><ion-icon name="hourglass-outline" color="primary"></ion-icon></ion-fab-button>
+      <ion-fab-button color="secondary" (click)="createCajaCircuitAlert()" data-desc="Circuit of timers"><ion-icon name="flag" color="primary"></ion-icon></ion-fab-button>
+      <ion-fab-button color="secondary" (click)="createCajaTimerAlert()" data-desc="Timer"><ion-icon name="hourglass-outline" color="primary"></ion-icon></ion-fab-button>
     </ion-fab-list>
   </ion-fab>
 
