@@ -50,7 +50,7 @@ ion-content {
   top: 9px;
   color: var(--ion-color-light);
 }
-  // Tipo caja
+  // Tipo caja 
 .timer{
   margin-top: 10px;
   position: relative;
@@ -93,6 +93,7 @@ ion-content {
   height: 45px;
   left: 55%;
   text-align:center;
+  --ionicon-stroke-width: 16px;
 }
 .caja-buttons {
   font-size: 25px;

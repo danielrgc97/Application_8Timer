@@ -70,7 +70,7 @@ export class MainTimersPage implements OnInit {
             } else {
               let totalTimeValue =  data.hours * 3600 + data.minutes * 60 + 1 * data.seconds;
               if (totalTimeValue === 0){ totalTimeValue = 1; }
-              this.cajasService.addCaja( 'timer', 0, data.name, totalTimeValue, null, null);
+              this.addCaja( 'timer', 0, data.name, totalTimeValue, null, null);
               this.ngOnInit();
             }
           }
@@ -87,35 +87,31 @@ export class MainTimersPage implements OnInit {
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Current name : ' + this.cajas[id].timerName
-        },
-        {
-          name: 'hours',
-          type: 'number',
-          placeholder: 'Current hours : ' + Math.floor(this.cajas[id].timerValue / 3600 )
-        },
-        {
-          name: 'minutes',
-          type: 'number',
-          placeholder: 'Current minutes : ' + Math.floor(this.cajas[id].timerValue % 3600 / 60)
+          placeholder: 'Name : ' + this.cajas[id].timerName
         },
         {
           name: 'seconds',
           type: 'number',
-          placeholder: 'Current seconds : ' + Math.floor(this.cajas[id].timerValue % 3600 % 60)
+          placeholder: 'Seconds : ' + Math.floor(this.cajas[id].timerValue % 3600 % 60)
+        },
+        {
+          name: 'minutes',
+          type: 'number',
+          placeholder: 'Minutes : ' + Math.floor(this.cajas[id].timerValue % 3600 / 60)
+        },
+        {
+          name: 'hours',
+          type: 'number',
+          placeholder: 'Hours : ' + Math.floor(this.cajas[id].timerValue / 3600 )
         }
       ],
       buttons: [
         {
           text: 'Delete',
           handler: (data) => {
-            this.cajasService.deleteCaja(id);
+            this.deleteCaja(id);
             this.ngOnInit();
           }
-        },
-        {
-          text: 'Cancel',
-          role: 'cancel'
         },
         {
           text: 'Confirm',
@@ -125,14 +121,20 @@ export class MainTimersPage implements OnInit {
               this.editCajaTimerAlert(id);
               this.basicAlert('Introduce allowed values');
             } else {
-              if ( data.name === '' ) { data.name = this.cajas[id].timerName; }
-              if ( data.hours === '' ) { data.hours = Math.floor(this.cajas[id].timerValue / 3600 ); }
-              if ( data.minutes === '' ) { data.minutes = Math.floor(this.cajas[id].timerValue % 3600 / 60); }
-              if ( data.seconds === '' ) { data.seconds = Math.floor(this.cajas[id].timerValue % 3600 % 60); }
+              let h = Math.floor(this.cajas[id].timerValue / 3600 );
+              let m = Math.floor(this.cajas[id].timerValue % 3600 / 60);
+              let s = Math.floor(this.cajas[id].timerValue % 3600 % 60);
 
-              const totalTimeValue =  data.hours * 3600 + data.minutes * 60 + 1 * data.seconds;
-              this.cajasService.editCaja(id, data.name, totalTimeValue, null, null);
-              this.ngOnInit();
+              if ( data.name !== null ) { this.cajas[id].timerName = data.name; }
+              if ( data.hours !== '' ) { h = data.hours; }
+              if ( data.minutes !== '' ) { m = data.minutes; }
+              if ( data.seconds !== '' ) { s = data.seconds; }
+
+              const totalTimeValue =  h * 3600 + m * 60 + 1 * s;
+              this.cajas[id].timerValue = totalTimeValue;
+              this.cajas[id].countingValue = totalTimeValue;
+              this.displayStringFormer(id);
+              this.cajasService.volcarCajas(this.cajas);
             }
           }
         }
@@ -164,11 +166,11 @@ export class MainTimersPage implements OnInit {
         {
           text: 'Confirm',
           handler: (data) => {
-            if ( data.name === '' || data.time === '' ){
+            if ( data.name === '' || data.laps === '' ){
               this.createCajaCircuitAlert();
+              this.basicAlert('A circuit must have name and laps');
             }else{
-              this.cajasService.addCaja('circuit', 11, null, null, data.name, parseInt(data.laps, 10));
-              this.ngOnInit();
+              this.addCaja('circuit', 11, null, null, data.name, parseInt(data.laps, 10));
             }
           }
         }
@@ -196,7 +198,7 @@ export class MainTimersPage implements OnInit {
         {
           text: 'Delete',
           handler: (data) => {
-            this.cajasService.deleteCaja(id);
+            this.deleteCaja(id);
             this.ngOnInit();
           }
         },
@@ -211,10 +213,9 @@ export class MainTimersPage implements OnInit {
               this.editCajaCircuitAlert(id);
               this.basicAlert('Introduce allowed values');
             }else{
-              if ( data.name === '' ) { data.name = this.cajas[id].circuitName; }
-              if ( data.laps === '' ) { data.laps = this.cajas[id].circuitLaps; }
-              this.cajasService.editCaja(id, null, null, data.name, data.laps);
-              this.ngOnInit();
+              if ( data.name !== '' ) { this.cajas[id].circuitName = data.name; }
+              if ( data.laps !== '' ) { this.cajas[id].circuitLaps = data.laps; }
+              this.cajasService.volcarCajas(this.cajas);
             }
           }
         }
@@ -258,6 +259,7 @@ export class MainTimersPage implements OnInit {
   pause(id: number){
     clearInterval(this.cajas[id].interval);
     this.cajas[id].counting = false;
+    this.cajasService.volcarCajas(this.cajas);
   }
   reset(id: number){
     this.cajas[id].countingValue = this.cajas[id].timerValue;
@@ -266,27 +268,53 @@ export class MainTimersPage implements OnInit {
   }
 
   // Caja controls
-  delete(id: number){
-    this.cajasService.deleteCaja(id);
-    this.cajas = this.cajasService.getAllCajas();
+  addCaja(type: string, circuitState: number, timerName: string, timerValue: number, circuitName: string, circuitLaps: number){
+    this.cajas.push({
+      type,
+      enabled: true,
+      circuitState,
+      id: this.cajas.length,
+      timerName,
+      timerValue,
+      countingValue: timerValue,
+      displayString: null,
+      counting: false,
+      interval: null,
+      circuitName,
+      circuitLaps
+    });
+    this.cajasService.volcarCajas(this.cajas);
+  }
+  deleteCaja(id: number){
+    this.cajas.splice( id, 1);
+    this.orderIds();
+    this.cajasService.volcarCajas(this.cajas);
+  }
+  orderIds(){
+    let i = 0;
+    for (const c of this.cajas){
+      c.id = i++;
+    }
   }
   drop(event: CdkDragDrop<string[]>) {
-    // this.cajasService.moveCajas(event.previousIndex, event.currentIndex);
-    // this.ngOnInit();
-    const tempCaja = this.cajas[event.previousIndex];
-    if (event.previousIndex < event.currentIndex){
-      for (let i = event.previousIndex; i < event.currentIndex; i++){
+    this.moveCajas(event.previousIndex, event.currentIndex);
+  }
+  moveCajas(fromId: number, toId: number) {
+    const tempCaja = this.cajas[fromId];
+    if (fromId < toId){
+      for (let i = fromId; i < toId; i++){
         this.cajas[i] = this.cajas[i + 1];
         this.cajas[i].id = i;
       }
     } else {
-      for (let i = event.previousIndex; i > event.currentIndex; i--){
+      for (let i = fromId; i > toId; i--){
         this.cajas[i] = this.cajas[i - 1];
         this.cajas[i].id = i;
       }
     }
-    this.cajas[event.currentIndex] = tempCaja;
-    this.cajas[event.currentIndex].id = event.currentIndex;
+    this.cajas[toId] = tempCaja;
+    this.cajas[toId].id = toId;
+    this.cajasService.volcarCajas(this.cajas);
   }
   displayStringFormer(id: number){
     if (this.cajas[id].countingValue !== null){
@@ -306,11 +334,15 @@ export class MainTimersPage implements OnInit {
   // Circuit control
   flechaChange(id: number){
     if (this.cajas[id].circuitState === 11) {
-      this.cajasService.changeCircuitState(id, 10);
+      this.changeCircuitState(id, 10);
       this.ngOnInit();
     } else {
-      this.cajasService.changeCircuitState(id, 11);
+      this.changeCircuitState(id, 11);
       this.ngOnInit();
     }
+  }
+  changeCircuitState(id: number, num: number){
+    this.cajas[id].circuitState = num;
+    this.cajasService.volcarCajas(this.cajas);
   }
 }

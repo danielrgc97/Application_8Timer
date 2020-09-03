@@ -1,4 +1,4 @@
-<ion-header >
+<ion-header no-border>
   <ion-toolbar color="primary">
     <ion-button slot="start" fill="clear" >
       <ion-menu-button color="light"></ion-menu-button>
@@ -13,7 +13,7 @@
 <ion-content class="getstart">
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
     <!-- Lista con 2 tipos elementos -->
-    <div *ngFor="let c of cajas;let i = index; let last = last" class="{{c.type}}" cdkDrag>
+    <div *ngFor="let c of cajas;let i = index; let last = last" class="{{c.type}}" cdkDrag [cdkDragStartDelay]="300">
 
       <!-- Tipo cajas activadas -->
       <div *ngIf="c.type==='timer'">
@@ -51,9 +51,9 @@
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button id="btn" color="secondary"><ion-icon name="add" color="primary"></ion-icon></ion-fab-button>
     <ion-fab-list side="top">
-      <ion-fab-button color="secondary" (click)="createCajaCircuitAlert()" data-desc="Circuit of timers"><ion-icon name="flag" color="primary"></ion-icon></ion-fab-button>
+      <ion-fab-button color="secondary" (click)="createCajaCircuitAlert()" data-desc="Circuit with laps"><ion-icon name="flag" color="primary"></ion-icon></ion-fab-button>
       <ion-fab-button color="secondary" (click)="createCajaTimerAlert()" data-desc="Timer"><ion-icon name="hourglass-outline" color="primary"></ion-icon></ion-fab-button>
     </ion-fab-list>
-  </ion-fab>
+  </ion-fab> 
 
 </ion-content>
