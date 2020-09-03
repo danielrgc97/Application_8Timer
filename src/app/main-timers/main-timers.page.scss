@@ -44,6 +44,15 @@ ion-content {
   top: -14px;
   font-size: 100px;
 }
+.groupPos {
+  position: absolute;
+  width: 20%;
+  left: -2%;
+  top: 25px;
+  color: var(--ion-color-light);
+  text-align: center;
+  font-size: 20px;
+}
 .circuitNombre {
   position: absolute;
   left: 12%;

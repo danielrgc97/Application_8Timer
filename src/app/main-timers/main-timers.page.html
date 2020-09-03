@@ -17,7 +17,11 @@
 
       <!-- Tipo cajas activadas -->
       <div *ngIf="c.type==='timer'">
-        <ion-icon class="circuitIcon" src="../../assets/icon/mostaza-startcircuit.svg"></ion-icon>
+        <ion-icon *ngIf="c.circuitState === 3 && c.circuitPos === 2" class="circuitIcon" src="../../assets/icon/circuit-mostaza/alone.svg"></ion-icon>
+        <ion-icon *ngIf="c.circuitState === 1" class="circuitIcon" src="../../assets/icon/circuit-mostaza/start.svg"></ion-icon>
+        <ion-icon *ngIf="c.circuitState === 2" class="circuitIcon" src="../../assets/icon/circuit-mostaza/middle.svg"></ion-icon>
+        <ion-icon *ngIf="c.circuitState === 3 && c.circuitPos !== 2" class="circuitIcon" src="../../assets/icon/circuit-mostaza/end.svg"></ion-icon>
+        <div class = "groupPos">{{'  '}} {{c.circuitPos - 1}}</div>
         <div class = "name"> {{c.timerName}}</div>
         <div class = "time" >{{c.displayString}}</div>
         <ion-button class="buttonCajaTimerEdit" size="small" fill="clear" (click)="editCajaTimerAlert(i)"></ion-button>

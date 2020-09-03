@@ -265,22 +265,23 @@ export class MainTimersPage implements OnInit {
 
   // Caja controls
   addCaja(type: string, timerName: string, timerValue: number, circuitName: string, circuitLaps: number){
+    let cSte = 0;
+    if (type === 'circuit') {cSte = 11; }
+
     let c;
-    let cState = 0;
-    let cPos = 0;
+    let gId;
     if ( this.cajas.length !== 0) {
       c = this.cajas[this.cajas.length - 1];
-      if (c.circuitState === 11) { cState = 3; }
-      if (c.circuitState === 3 && c.circuitPos === 2) {cState = 3; c.circuitState = 1; }
-      if (c.circuitState === 3 && c.circuitPos !== 2) {cState = 3; c.circuitState = 2; }
-      if (c.circuitPos === 0 || c.circuitState === 10 ) {cPos = 0; } else { cPos = c.circuitPos + 1; }
+      if (c.circuitState !== 0 && c.circuitState !== 10 && type === 'timer') {gId = c.groupId; cSte = 1; } else { gId = c.groupId + 1; }
+    } else {
+      gId = 0;
     }
-    if ( type === 'circuit' ){ cState = 11; cPos = 1; }
 
     this.cajas.push({
       type,
+      groupId: gId,
       enabled: true,
-      circuitState: cState,
+      circuitState: cSte,
       id: this.cajas.length,
       timerName,
       timerValue,
@@ -288,24 +289,20 @@ export class MainTimersPage implements OnInit {
       displayString: null,
       counting: false,
       interval: null,
-      circuitPos: cPos,
+      circuitPos: 0,
       circuitName,
       circuitLaps,
       visible: true
     });
+    this.orderEverything();
     this.cajasService.volcarCajas(this.cajas);
   }
   deleteCaja(id: number){
     this.cajas.splice( id, 1);
-    this.orderIds();
+    this.orderEverything();
     this.cajasService.volcarCajas(this.cajas);
   }
-  orderIds(){
-    let i = 0;
-    for (const c of this.cajas){
-      c.id = i++;
-    }
-  }
+
   drop(event: CdkDragDrop<string[]>) {
     this.moveCajas(event.previousIndex, event.currentIndex);
   }
@@ -354,5 +351,58 @@ export class MainTimersPage implements OnInit {
   changeCircuitState(id: number, num: number){
     this.cajas[id].circuitState = num;
     this.cajasService.volcarCajas(this.cajas);
+  }
+
+  orderEverything(){
+    // Ordena campo id
+    let i = 0;
+    for (const c of this.cajas){
+      c.id = i++;
+    }
+
+    // Ordena campo groupId
+    let oldGroup;
+    let newGroupId = -1;
+    for (const c of this.cajas){
+      if (c.groupId === oldGroup){
+
+      }else{
+        newGroupId++;
+      }
+      oldGroup = c.groupId;
+      c.groupId = newGroupId;
+    }
+    for (const c of this.cajas) {
+      console.log(c.groupId);
+    }
+
+    // Ordena circuit state and circuitpos
+    for (i = 0; i <= this.cajas[this.cajas.length - 1].groupId; i++) {
+      let tam = 0;
+      let posF = 0;
+      for (const c of this.cajas) {
+        if (c.groupId === i) { tam++; posF = c.id; }
+      }
+      const posI = posF - tam + 1;
+
+      console.log(i + '@@' + tam + ',' + posI + ',' + posF);
+
+      if ( tam > 1 ){
+        for ( let j = posI; j <= posF; j++) {
+          this.cajas[j].circuitState = 2;
+        }
+        this.cajas[posI].circuitState = 11;
+        this.cajas[posI + 1].circuitState = 1;
+        this.cajas[posF].circuitState = 3;
+      } else {
+        if (this.cajas[posF].type === 'circuit') {
+          this.cajas[posF].circuitState = 11;
+        } else {
+          this.cajas[posF].circuitState = 0;
+        }
+      }
+
+    }
+
   }
 }

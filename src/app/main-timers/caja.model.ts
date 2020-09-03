@@ -4,8 +4,9 @@ export interface Caja{
     // Propiedades globales para cualquier tipo
     id: number;
     type: string;
-    enabled: boolean;
+    groupId: number;
     circuitState: number;
+    enabled: boolean;
 
     // Propiedades de los timers
     timerName: string;
