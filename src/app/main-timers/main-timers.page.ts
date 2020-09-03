@@ -354,11 +354,13 @@ export class MainTimersPage implements OnInit {
   }
 
   orderEverything(){
+
     // Ordena campo id
     let i = 0;
     for (const c of this.cajas){
       c.id = i++;
     }
+    const closedCircuits = this.cajas.filter( caja => caja.circuitState === 10 );
 
     // Ordena campo groupId
     let oldGroup;
@@ -380,8 +382,10 @@ export class MainTimersPage implements OnInit {
     for (i = 0; i <= this.cajas[this.cajas.length - 1].groupId; i++) {
       let tam = 0;
       let posF = 0;
+      let cPos = 0;
       for (const c of this.cajas) {
-        if (c.groupId === i) { tam++; posF = c.id; }
+        if (c.type === 'circuit') { cPos++; }
+        if (c.groupId === i) { tam++; posF = c.id; this.cajas[c.id].circuitPos = cPos++; }
       }
       const posI = posF - tam + 1;
 
@@ -400,6 +404,9 @@ export class MainTimersPage implements OnInit {
         } else {
           this.cajas[posF].circuitState = 0;
         }
+      }
+      for (const c of closedCircuits){
+        this.cajas[c.id].circuitState = 10;
       }
 
     }
