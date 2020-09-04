@@ -12,7 +12,7 @@ import {CdkDragDrop, CdkDragMove} from '@angular/cdk/drag-drop';
 export class MainTimersPage implements OnInit {
 
   cajas: Caja[];
-  showGroup = true;
+  playPage = false;
 
   constructor( public alertController: AlertController, private cajasService: CajasService) {}
 
@@ -130,7 +130,7 @@ export class MainTimersPage implements OnInit {
               this.cajas[id].timerValue = totalTimeValue;
               this.cajas[id].countingValue = totalTimeValue;
               // this.displayStringFormer(id);
-              this.orderEverythingAndSave();
+              this.magic();
             }
           }
         }
@@ -207,7 +207,7 @@ export class MainTimersPage implements OnInit {
             }else{
               if ( data.name !== '' ) { this.cajas[id].circuitName = data.name; }
               if ( data.laps !== '' ) { this.cajas[id].circuitLaps = data.laps; }
-              this.orderEverythingAndSave();
+              this.magic();
             }
           }
         }
@@ -264,6 +264,9 @@ export class MainTimersPage implements OnInit {
     let cSte = 0;
     if (type === 'circuit') {cSte = 11; }
 
+    let cValue;
+    if (type === 'circuit') { cValue = 1; } else {cValue = timerValue; }
+
     let c;
     let gId;
     if ( this.cajas.length !== 0) {
@@ -286,7 +289,7 @@ export class MainTimersPage implements OnInit {
       id: this.cajas.length,
       timerName,
       timerValue,
-      countingValue: timerValue,
+      countingValue: cValue,
       displayString: null,
       counting: false,
       interval: null,
@@ -295,13 +298,12 @@ export class MainTimersPage implements OnInit {
       circuitLaps,
       visible: true
     });
-    this.orderEverythingAndSave();
+    this.magic();
   }
   deleteCaja(id: number){
     this.cajas.splice( id, 1);
-    this.orderEverythingAndSave();
+    this.magic();
   }
-
   drop(event: CdkDragDrop<string[]>) {
     if (this.cajas[event.previousIndex].type === 'timer') {
       this.moveCajas(event.previousIndex, event.currentIndex);
@@ -331,9 +333,11 @@ export class MainTimersPage implements OnInit {
         }
       }
     }
-    this.orderEverythingAndSave();
+    this.magic();
   }
-
+  drag(id: number) {
+    if (this.cajas[id].circuitState === 11) {this.circuitHideShow(id); }
+  }
   moveCajas(fromId: number, toId: number) {
     const tempCaja = this.cajas[fromId];
     if (fromId < toId){
@@ -386,7 +390,7 @@ export class MainTimersPage implements OnInit {
     this.cajas[id].circuitState = num;
     this.cajasService.volcarCajas(this.cajas);
   }
-  orderEverythingAndSave(){
+  magic(){ // Ordena ids, ajusta los estadados, ajusta display y guarda en memoria
 
     // Ordena campo id forma string y guarda circuitos con estado cerrado (10)
     let i = 0;
@@ -446,8 +450,6 @@ export class MainTimersPage implements OnInit {
     // orderEverythingAndSave
   }
 
-  drag(id: number) {
-    if (this.cajas[id].circuitState === 11) {this.circuitHideShow(id); }
-  }
+  
 
 }

@@ -1,16 +1,28 @@
-<ion-header no-border>
-  <ion-toolbar color="primary">
-    <ion-button slot="start" fill="clear" >
-      <ion-menu-button color="light"></ion-menu-button>
-    </ion-button>
-    <ion-title mode=ios>
-      <ion-icon class="topIcon" src="../../assets/icon/white-over-black.svg"> </ion-icon>
-    </ion-title>
+<!-- <ion-header class="ion-no-border">
+  <ion-toolbar color="transparent">
+    <div class="topCaja">
+      <ion-button slot="start" fill="clear" >
+        <ion-menu-button color="light"></ion-menu-button>
+      </ion-button>
+      <ion-title mode=ios>
+        <ion-icon class="topIcon" src="../../assets/icon/white-over-black.svg"> </ion-icon>
+      </ion-title>
+    </div>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 
-<ion-content class="getstart">
+<ion-content class="getstart" fullscreen>
+
+  <!-- <ion-toolbar color="transparent" > -->
+    <div  slot="fixed">
+      <ion-button slot="start" color="dark" class="topCaja">
+        <ion-menu-button color="light"></ion-menu-button>
+      </ion-button>
+    </div>
+  <!-- </ion-toolbar> -->
+
+
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
     <!-- Lista con 2 tipos elementos -->
     <div *ngFor="let c of cajas;let i = index; let last = last" class="{{c.type}}" cdkDrag (cdkDragStarted)="drag(i)" [cdkDragStartDelay]="300" >
@@ -33,7 +45,7 @@
       <!-- Tipo circuito activado -->
       <div *ngIf="c.type==='circuit'" >
         <span class="circuitNombre" >{{c.circuitName}}</span>
-        <span class="circuitLaps"> x {{c.circuitLaps}} Laps </span>
+        <span class="circuitLaps"> {{c.countingValue}} of {{c.circuitLaps}} Laps </span>
         <ion-button class="buttonCajaCircuitEdit" fill="clear" (click)="editCajaCircuitAlert(i)"></ion-button>
         <ion-button class='flechaCircuit' fill="clear" size="small" (click)="circuitHideShow(i)"><ion-icon color="light" [name]="c.circuitState===10 ? 'chevron-forward-outline' : 'chevron-down-outline'"></ion-icon></ion-button>
       </div>

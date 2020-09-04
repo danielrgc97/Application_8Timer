@@ -3,6 +3,15 @@
   margin-top: 5px;
   font-size: 50px;
 }
+.topCaja {
+  position: absolute;
+  background-color: darkcyan;
+  height: 55px;
+  width: 5%;
+  left: -15px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
 
 // Body
 ion-content {
