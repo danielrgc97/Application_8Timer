@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Caja } from './caja.model';
 import { CajasService } from './cajas.service';
 import { AlertController } from '@ionic/angular';
-import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, CdkDragMove} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-main-timers',
@@ -19,10 +19,6 @@ export class MainTimersPage implements OnInit {
   ngOnInit() {
     this.cajasService.getObjects().then( _ => {
       this.cajas = this.cajasService.getAllCajas();
-    }).then(_ => {
-      for (const c of this.cajas){
-        this.displayStringFormer(c.id);
-      }
     });
   }
 
@@ -34,22 +30,22 @@ export class MainTimersPage implements OnInit {
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Name of the timer '
-        },
-        {
-          name: 'hours',
-          type: 'number',
-          placeholder: 'Number of hours ( 0 - 9 )'
-        },
-        {
-          name: 'minutes',
-          type: 'number',
-          placeholder: 'Number of minutes ( 0 - 59 )'
+          placeholder: 'Name'
         },
         {
           name: 'seconds',
           type: 'number',
-          placeholder: 'Number of seconds ( 0 - 59 )'
+          placeholder: 'Seconds ( 0 - 59 )'
+        },
+        {
+          name: 'minutes',
+          type: 'number',
+          placeholder: 'Minutes ( 0 - 59 )'
+        },
+        {
+          name: 'hours',
+          type: 'number',
+          placeholder: 'Hours ( 0 - 9 )'
         }
       ],
       buttons: [
@@ -155,7 +151,7 @@ export class MainTimersPage implements OnInit {
         {
           name: 'laps',
           type: 'number',
-          placeholder: 'Laps of the circuit ( 0 - 999 )'
+          placeholder: 'Laps ( 0 - 999 )'
         }
       ],
       buttons: [
@@ -186,12 +182,12 @@ export class MainTimersPage implements OnInit {
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Current name : ' + this.cajas[id].circuitName
+          placeholder: 'Name : ' + this.cajas[id].circuitName
         },
         {
           name: 'laps',
           type: 'number',
-          placeholder: 'Current name : ' + this.cajas[id].circuitLaps
+          placeholder: 'Laps : ' + this.cajas[id].circuitLaps
         }
       ],
       buttons: [
@@ -272,7 +268,11 @@ export class MainTimersPage implements OnInit {
     let gId;
     if ( this.cajas.length !== 0) {
       c = this.cajas[this.cajas.length - 1];
-      if (c.circuitState !== 0 && c.circuitState !== 10 && type === 'timer') {gId = c.groupId; cSte = 1; } else { gId = c.groupId + 1; }
+      if (c.circuitState !== 0 && c.circuitState !== 10 && c.type !== 'timerHide' ) {
+        gId = c.groupId; cSte = 1;
+      } else {
+        gId = c.groupId + 1;
+      }
     } else {
       gId = 0;
     }
@@ -280,6 +280,7 @@ export class MainTimersPage implements OnInit {
     this.cajas.push({
       type,
       groupId: gId,
+      display: true,
       enabled: true,
       circuitState: cSte,
       id: this.cajas.length,
@@ -294,34 +295,47 @@ export class MainTimersPage implements OnInit {
       circuitLaps,
       visible: true
     });
-    this.orderEverything();
-    this.cajasService.volcarCajas(this.cajas);
+    this.orderEverythingAndSave();
   }
   deleteCaja(id: number){
     this.cajas.splice( id, 1);
-    this.orderEverything();
-    this.cajasService.volcarCajas(this.cajas);
+    this.orderEverythingAndSave();
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    this.moveCajas(event.previousIndex, event.currentIndex);
+    if (this.cajas[event.previousIndex].type === 'timer') {
+      for (const c of this.cajas) {
+        console.log(c.groupId);
+      }
+      this.moveCajas(event.previousIndex, event.currentIndex);
+      // const a = this.cajas[event.currentIndex - 1];
+      // if (a.circuitState === 2 || a.circuitState === 1 || a.circuitState === 11) {
+      //   this.cajas[event.currentIndex].groupId = a.groupId;
+      // } else {
+      //   this.cajas[event.currentIndex].groupId = 999;
+      // }
+      for (const c of this.cajas) {
+        console.log(c.groupId);
+      }
+      this.orderEverythingAndSave();
+    } else {
+
+    }
   }
+
   moveCajas(fromId: number, toId: number) {
     const tempCaja = this.cajas[fromId];
     if (fromId < toId){
       for (let i = fromId; i < toId; i++){
         this.cajas[i] = this.cajas[i + 1];
-        this.cajas[i].id = i;
       }
     } else {
       for (let i = fromId; i > toId; i--){
         this.cajas[i] = this.cajas[i - 1];
-        this.cajas[i].id = i;
       }
     }
     this.cajas[toId] = tempCaja;
-    this.cajas[toId].id = toId;
-    this.cajasService.volcarCajas(this.cajas);
+    this.orderEverythingAndSave();
   }
   displayStringFormer(id: number){
     if (this.cajas[id].countingValue !== null){
@@ -342,23 +356,31 @@ export class MainTimersPage implements OnInit {
   flechaChange(id: number){
     if (this.cajas[id].circuitState === 11) {
       this.changeCircuitState(id, 10);
-      this.ngOnInit();
+      const cajasToHide = this.cajas.filter(caja => caja.groupId === this.cajas[id].groupId && caja.type === 'timer');
+      for ( const c of cajasToHide) {
+        this.cajas[c.id].type = 'timerHide';
+      }
     } else {
       this.changeCircuitState(id, 11);
-      this.ngOnInit();
+      const cajasToShow = this.cajas.filter(caja => caja.groupId === this.cajas[id].groupId && caja.type === 'timerHide');
+      for ( const c of cajasToShow) {
+        this.cajas[c.id].type = 'timer';
+      }
     }
   }
   changeCircuitState(id: number, num: number){
     this.cajas[id].circuitState = num;
     this.cajasService.volcarCajas(this.cajas);
   }
+  orderEverythingAndSave(){
 
-  orderEverything(){
-
-    // Ordena campo id
+    // Ordena campo id forma string y guarda circuitos con estado cerrado (10)
     let i = 0;
     for (const c of this.cajas){
       c.id = i++;
+    }
+    for (const c of this.cajas){
+      this.displayStringFormer(c.id);
     }
     const closedCircuits = this.cajas.filter( caja => caja.circuitState === 10 );
 
@@ -374,42 +396,41 @@ export class MainTimersPage implements OnInit {
       oldGroup = c.groupId;
       c.groupId = newGroupId;
     }
-    for (const c of this.cajas) {
-      console.log(c.groupId);
-    }
 
-    // Ordena circuit state and circuitpos
-    for (i = 0; i <= this.cajas[this.cajas.length - 1].groupId; i++) {
-      let tam = 0;
-      let posF = 0;
-      let cPos = 0;
-      for (const c of this.cajas) {
-        if (c.type === 'circuit') { cPos++; }
-        if (c.groupId === i) { tam++; posF = c.id; this.cajas[c.id].circuitPos = cPos++; }
-      }
-      const posI = posF - tam + 1;
-
-      console.log(i + '@@' + tam + ',' + posI + ',' + posF);
-
-      if ( tam > 1 ){
-        for ( let j = posI; j <= posF; j++) {
-          this.cajas[j].circuitState = 2;
+    // Ordena circuit state and circuit position
+    if (this.cajas.length > 0) {
+      for (i = 0; i <= this.cajas[this.cajas.length - 1].groupId; i++) {
+        let tam = 0;
+        let posF = 0;
+        let cPos = 0;
+        for (const c of this.cajas) {
+          if (c.type === 'circuit') { cPos++; }
+          if (c.groupId === i) { tam++; posF = c.id; this.cajas[c.id].circuitPos = cPos++; }
         }
-        this.cajas[posI].circuitState = 11;
-        this.cajas[posI + 1].circuitState = 1;
-        this.cajas[posF].circuitState = 3;
-      } else {
-        if (this.cajas[posF].type === 'circuit') {
-          this.cajas[posF].circuitState = 11;
+        const posI = posF - tam + 1;
+        if ( tam > 1 ){
+          for ( let j = posI; j <= posF; j++) {
+            this.cajas[j].circuitState = 2;
+          }
+          this.cajas[posI].circuitState = 11;
+          this.cajas[posI + 1].circuitState = 1;
+          this.cajas[posF].circuitState = 3;
         } else {
-          this.cajas[posF].circuitState = 0;
+          if (this.cajas[posF].type === 'circuit') {
+            this.cajas[posF].circuitState = 11;
+          } else {
+            this.cajas[posF].circuitState = 0;
+          }
+        }
+        for (const c of closedCircuits){
+          this.cajas[c.id].circuitState = 10;
         }
       }
-      for (const c of closedCircuits){
-        this.cajas[c.id].circuitState = 10;
-      }
-
     }
 
+    this.cajasService.volcarCajas(this.cajas);
+    // orderEverythingAndSave
   }
+
+
 }

@@ -6,6 +6,7 @@ export interface Caja{
     type: string;
     groupId: number;
     circuitState: number;
+    display: boolean;
     enabled: boolean;
 
     // Propiedades de los timers

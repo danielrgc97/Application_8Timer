@@ -13,15 +13,14 @@
 <ion-content class="getstart">
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
     <!-- Lista con 2 tipos elementos -->
-    <div *ngFor="let c of cajas;let i = index; let last = last" class="{{c.type}}" cdkDrag [cdkDragStartDelay]="300">
+    <div *ngFor="let c of cajas;let i = index; let last = last" class="{{c.type}}" cdkDrag [cdkDragStartDelay]="300" >
 
       <!-- Tipo cajas activadas -->
-      <div *ngIf="c.type==='timer'">
+      <div *ngIf="c.type==='timer'"> 
         <ion-icon *ngIf="c.circuitState === 3 && c.circuitPos === 2" class="circuitIcon" src="../../assets/icon/circuit-mostaza/alone.svg"></ion-icon>
         <ion-icon *ngIf="c.circuitState === 1" class="circuitIcon" src="../../assets/icon/circuit-mostaza/start.svg"></ion-icon>
         <ion-icon *ngIf="c.circuitState === 2" class="circuitIcon" src="../../assets/icon/circuit-mostaza/middle.svg"></ion-icon>
         <ion-icon *ngIf="c.circuitState === 3 && c.circuitPos !== 2" class="circuitIcon" src="../../assets/icon/circuit-mostaza/end.svg"></ion-icon>
-        <div class = "groupPos">{{'  '}} {{c.circuitPos - 1}}</div>
         <div class = "name"> {{c.timerName}}</div>
         <div class = "time" >{{c.displayString}}</div>
         <ion-button class="buttonCajaTimerEdit" size="small" fill="clear" (click)="editCajaTimerAlert(i)"></ion-button>

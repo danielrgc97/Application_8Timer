@@ -17,7 +17,7 @@ export class CajasService {
   getAllCajas(){
     return [...this.cajas];
   }
-  
+
   volcarCajas(cs: Caja[]){
     this.cajas = [];
     for ( let i = 0 ; i < cs.length ; i++){
@@ -25,6 +25,8 @@ export class CajasService {
     }
     this.setObjects();
   }
+
+  // Funciones gestion de almacenamiento
 
   async getObjects() {
     const s = await Storage.get({ key: '8Timer' });
