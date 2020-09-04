@@ -1,6 +1,6 @@
-<!-- <ion-header class="ion-no-border">
-  <ion-toolbar color="transparent">
-    <div class="topCaja">
+<ion-header >
+  <ion-toolbar color="primary">
+    <div >
       <ion-button slot="start" fill="clear" >
         <ion-menu-button color="light"></ion-menu-button>
       </ion-button>
@@ -9,20 +9,21 @@
       </ion-title>
     </div>
   </ion-toolbar>
-</ion-header> -->
+</ion-header>
 
 
 <ion-content class="getstart" fullscreen>
 
-  <!-- <ion-toolbar color="transparent" > -->
+  <!-- <ion-toolbar color="transparent" >
     <div  slot="fixed">
       <ion-button slot="start" color="dark" class="topCaja">
         <ion-menu-button color="light"></ion-menu-button>
       </ion-button>
     </div>
-  <!-- </ion-toolbar> -->
+  </ion-toolbar> -->
 
-
+  <!-- <div class="block"></div> -->
+  
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
     <!-- Lista con 2 tipos elementos -->
     <div *ngFor="let c of cajas;let i = index; let last = last" class="{{c.type}}" cdkDrag (cdkDragStarted)="drag(i)" [cdkDragStartDelay]="300" >
@@ -37,7 +38,7 @@
         <div class = "time" >{{c.displayString}}</div>
         <ion-button class="buttonCajaTimerEdit" size="small" fill="clear" (click)="editCajaTimerAlert(i)"></ion-button>
         <div class = "buttons">
-          <ion-button color="dark" fill="clear" size="small" (click)="playpause(i)"><ion-icon class="caja-buttons" [name]="c.counting===false ? 'play-outline' : 'pause-outline'"></ion-icon></ion-button>
+          <ion-button color="dark" fill="clear" size="small" (click)="controller( i, 1)"><ion-icon class="caja-buttons" [name]="c.counting===false ? 'play-outline' : 'pause-outline'"></ion-icon></ion-button>
           <ion-button color="dark" fill="clear" size="small" (click)="reset(i)"><ion-icon class="caja-buttons" name="refresh-outline"></ion-icon></ion-button>
         </div>
       </div>
@@ -45,7 +46,7 @@
       <!-- Tipo circuito activado -->
       <div *ngIf="c.type==='circuit'" >
         <span class="circuitNombre" >{{c.circuitName}}</span>
-        <span class="circuitLaps"> {{c.countingValue}} of {{c.circuitLaps}} Laps </span>
+        <span class="circuitLaps"> {{c.circuitDoingLap}} of {{c.circuitLaps}} Laps </span>
         <ion-button class="buttonCajaCircuitEdit" fill="clear" (click)="editCajaCircuitAlert(i)"></ion-button>
         <ion-button class='flechaCircuit' fill="clear" size="small" (click)="circuitHideShow(i)"><ion-icon color="light" [name]="c.circuitState===10 ? 'chevron-forward-outline' : 'chevron-down-outline'"></ion-icon></ion-button>
       </div>
@@ -53,6 +54,8 @@
     <!--  -->
     </div>
   </div>
+
+  <div class="block"></div>
 
   
 

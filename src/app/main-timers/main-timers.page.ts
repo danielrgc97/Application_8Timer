@@ -240,18 +240,20 @@ export class MainTimersPage implements OnInit {
   }
   play(id: number){
     this.cajas[id].counting = true;
+    --this.cajas[id].countingValue;
+    this.displayStringFormer(id);
     this.cajas[id].interval = setInterval(() => {
       --this.cajas[id].countingValue;
       this.displayStringFormer(id);
       if ( this.cajas[id].countingValue < 0){
-        this.reset(id);
+        this.controller(id, 0);
       }
     }, 1000);
   }
   pause(id: number){
     clearInterval(this.cajas[id].interval);
     this.cajas[id].counting = false;
-    this.cajasService.volcarCajas(this.cajas);
+    this.magic();
   }
   reset(id: number){
     this.cajas[id].countingValue = this.cajas[id].timerValue;
@@ -263,9 +265,6 @@ export class MainTimersPage implements OnInit {
   addCaja(type: string, timerName: string, timerValue: number, circuitName: string, circuitLaps: number){
     let cSte = 0;
     if (type === 'circuit') {cSte = 11; }
-
-    let cValue;
-    if (type === 'circuit') { cValue = 1; } else {cValue = timerValue; }
 
     let c;
     let gId;
@@ -289,12 +288,13 @@ export class MainTimersPage implements OnInit {
       id: this.cajas.length,
       timerName,
       timerValue,
-      countingValue: cValue,
+      countingValue: timerValue,
       displayString: null,
       counting: false,
       interval: null,
       circuitPos: 0,
       circuitName,
+      circuitDoingLap: 1,
       circuitLaps,
       visible: true
     });
@@ -366,7 +366,13 @@ export class MainTimersPage implements OnInit {
       if ( s < 10 ) { ss = '0' + s; } else { ss = '' + s; }
       if ( m < 10 ) { mm = '0' + m; } else { mm = '' + m; }
 
-      this.cajas[id].displayString = h + ':' + mm + ':' + ss;
+      if ( h === 0 ) {
+        this.cajas[id].displayString = mm + ':' + ss;
+      } else {
+        this.cajas[id].displayString = h + ':' + mm + ':' + ss;
+      }
+      // this.magic();
+
     }
   }
 
@@ -388,7 +394,7 @@ export class MainTimersPage implements OnInit {
   }
   changeCircuitState(id: number, num: number){
     this.cajas[id].circuitState = num;
-    this.cajasService.volcarCajas(this.cajas);
+    this.magic();
   }
   magic(){ // Ordena ids, ajusta los estadados, ajusta display y guarda en memoria
 
@@ -450,6 +456,46 @@ export class MainTimersPage implements OnInit {
     // orderEverythingAndSave
   }
 
-  
+  controller(id: number, flag: number) { // Es llapada al empezar y acabar un timer
+    if ( flag === 1 ) {
+
+      if ( this.cajas[id].counting === true ){
+        this.pause(id);
+      } else{
+        if (this.playPage === true) {
+          for (const c of this.cajas) {
+            this.reset(c.id);
+          }
+        }
+        const timersToPause = this.cajas.filter(caja => caja.groupId === this.cajas[id].groupId);
+        for (const t of timersToPause) {
+          this.pause(t.id);
+        }
+        this.play(id);
+      }
+
+    } else {
+      this.reset(id);
+      const timer = this.cajas[id];
+      const circuit = this.cajas[this.cajas.findIndex(caja => caja.groupId === timer.groupId)];
+
+      let idToPlay = id + 1;
+      if (timer.circuitState === 0) { idToPlay = -1; }
+
+      if (timer.circuitState === 3 && circuit.circuitDoingLap === circuit.circuitLaps) {
+        idToPlay = -1;
+        this.cajas[circuit.id].circuitDoingLap = 1;
+      } else if (timer.circuitState === 3) {
+        idToPlay = circuit.id + 1;
+        ++this.cajas[circuit.id].circuitDoingLap;
+      }
+
+      if (idToPlay === -1) {
+
+      } else {
+        this.play(idToPlay);
+      }
+    }
+  }
 
 }

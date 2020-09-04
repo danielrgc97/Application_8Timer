@@ -13,17 +13,20 @@
   margin-top: 10px;
 }
 
+
 // Body
 ion-content {
   --ion-background-color: var(--ion-color-primary);
 }
+.block{
+  position: relative;
+  background-color: #00000000;
+  height: 70px;
+  margin-top: 10px;
+}
 
 // List
-// .timer div:nth-last-child(1) {
-//   margin-bottom: 70px;
-// }
 
-// List elements
   // Tipo cycle
 .circuit {
   position: relative;
@@ -66,7 +69,7 @@ ion-content {
   top: 9px;
   color: var(--ion-color-light);
 }
-  // Tipo caja  
+  // Tipo caja 
 .timer{
   position: relative;
   background-color: var(--ion-color-light);
