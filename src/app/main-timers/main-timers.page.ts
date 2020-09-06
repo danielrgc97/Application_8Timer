@@ -4,6 +4,10 @@ import { CajasService } from './cajas.service';
 import { AlertController } from '@ionic/angular';
 import {CdkDragDrop, CdkDragMove} from '@angular/cdk/drag-drop';
 
+import {Howl, Howler} from 'howler';
+
+const {Howl, Howler} = require('howler');
+
 @Component({
   selector: 'app-main-timers',
   templateUrl: './main-timers.page.html',
@@ -239,6 +243,10 @@ export class MainTimersPage implements OnInit {
     }
   }
   play(id: number){
+    const sound = new Howl({
+      src: ['../../assets/beeps/beep-30b.mp3']
+    });
+
     this.cajas[id].counting = true;
     --this.cajas[id].countingValue;
     this.displayStringFormer(id);
@@ -247,6 +255,7 @@ export class MainTimersPage implements OnInit {
       this.displayStringFormer(id);
       if ( this.cajas[id].countingValue < 0){
         this.controller(id, 0);
+        sound.play();
       }
     }, 1000);
   }
