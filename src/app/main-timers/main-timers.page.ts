@@ -6,7 +6,6 @@ import {CdkDragDrop, CdkDragMove} from '@angular/cdk/drag-drop';
 
 import {Howl, Howler} from 'howler';
 
-const {Howl, Howler} = require('howler');
 
 @Component({
   selector: 'app-main-timers',
