@@ -28,8 +28,8 @@ export class MenuPage implements OnInit {
     this.paginas.push({
       id: this.paginas.length,
       name,
-      playPage: false,
-      dictadoNombres: false
+      playpage: false,
+      speech: false
     });
 
     this.paginasService.volcarPages(this.paginas);
@@ -65,7 +65,7 @@ export class MenuPage implements OnInit {
 
   pageSelected(id: number) {
     this.paginasService.setThePage(id);
-    this.paginasService.invoking();
+    this.paginasService.ngOnInitEventEmit();
   }
 
 

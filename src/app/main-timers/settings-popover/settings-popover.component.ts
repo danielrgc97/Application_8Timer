@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PaginasService } from 'src/app/menu/paginas.service';
+import { Page } from 'src/app/menu/page.model';
 
 @Component({
   selector: 'app-settings-popover',
@@ -7,13 +9,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsPopoverComponent implements OnInit {
 
+  thePage: Page;
 
-  constructor() { }
+  constructor(private paginasService: PaginasService) {
+    this.paginasService.getObjects().then(_ => {
+      this.thePage = this.paginasService.getThePage();
+    }); }
 
-  ngOnInit() {}
-
-  showPlayPage(event) {
-    console.log(event.detail.checked);
+  ngOnInit() {
   }
+
+  setPlayPage(event) {
+    this.paginasService.setPlayPage(event.detail.checked);
+  }
+
+  setSpeech(event) {
+    this.paginasService.setSpeech(event.detail.checked);
+  }
+
+  retu(){
+    return this.paginasService.getThePage().playpage;
+  }
+
 
 }

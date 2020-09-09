@@ -11,7 +11,7 @@ const { Storage } = Plugins;
 export class PaginasService {
 
   paginas: Page[] = [];
-  thePage: Page;
+  thePage: number;
 
 
 
@@ -20,15 +20,15 @@ export class PaginasService {
 
   constructor() { }
 
-  invoking() {
+  // Ivocacion de ngOnInit de la main
+  ngOnInitEventEmit() {
     this.invokeNgOnInit.emit();
   }
 
-
+  // Logica page
   getAllPages(){
     return [...this.paginas];
   }
-
   volcarPages(ps: Page[]){
     this.paginas = [];
     for ( let i = 0 ; i < ps.length ; i++){
@@ -36,13 +36,21 @@ export class PaginasService {
     }
     this.setObjects();
   }
-
   setThePage(id: number) {
-    this.thePage = this.paginas[id];
+    this.thePage = id;
   }
-
   getThePage() {
-    return this.thePage;
+    return this.paginas[this.thePage];
+  }
+  setPlayPage(bol: boolean) {
+    this.paginas[this.thePage].playpage = bol;
+    this.volcarPages(this.paginas);
+    this.ngOnInitEventEmit();
+  }
+  setSpeech(bol: boolean) {
+    this.paginas[this.thePage].speech = bol;
+    this.volcarPages(this.paginas);
+    this.ngOnInitEventEmit();
   }
 
   // Funciones gestion de almacenamiento
@@ -55,7 +63,8 @@ export class PaginasService {
         this.paginas[i] = j[i];
       }
     }
-    if (this.thePage === undefined) { this.thePage = this.paginas[0]; }
+    if (this.paginas[0] === undefined) {this.paginas.push({ id: 0, name: 'Default', playpage: false, speech: false}); this.setObjects(); }
+    if (this.thePage === undefined) { this.thePage = 0; }
     return s;
   }
 

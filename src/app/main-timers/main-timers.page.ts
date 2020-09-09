@@ -9,6 +9,7 @@ import { PaginasService } from '../menu/paginas.service';
 import {Howl} from 'howler';
 import { Router, NavigationEnd } from '@angular/router';
 import { SettingsPopoverComponent } from './settings-popover/settings-popover.component';
+import { Page } from '../menu/page.model';
 
 
 @Component({
@@ -19,7 +20,7 @@ import { SettingsPopoverComponent } from './settings-popover/settings-popover.co
 export class MainTimersPage implements OnInit {
 
   cajas: Caja[];
-  playPage = false;
+  thePage: Page;
 
   constructor( private router: Router , public alertController: AlertController,
                private cajasService: CajasService, private paginasService: PaginasService,
@@ -34,20 +35,11 @@ export class MainTimersPage implements OnInit {
     }
 
     this.paginasService.getObjects().then(_ => {
-    this.cajasService.getObjects().then( __ => {
-      this.cajas = this.cajasService.getAllCajas();
+      this.cajasService.getObjects().then( __ => {
+        this.cajas = this.cajasService.getAllCajas();
+        this.thePage = this.paginasService.getThePage();
+      });
     });
-    });
-  }
-
-  async settingsPopover(ev: any) {
-    const popover = await this.popoverController.create({
-      component: SettingsPopoverComponent,
-      cssClass: 'my-custom-class',
-      event: ev,
-      translucent: true
-    });
-    return await popover.present();
   }
 
 
@@ -372,7 +364,8 @@ export class MainTimersPage implements OnInit {
     this.magic();
   }
   drag(id: number) {
-    if (this.cajas[id].circuitState === 11) {this.circuitHideShow(id); }
+    if (this.cajas[id].circuitState === 11) {this.circuitHideShowGroup(id); }
+    this.reset(id);
   }
   moveCajas(fromId: number, toId: number) {
     const tempCaja = this.cajas[fromId];
@@ -413,7 +406,7 @@ export class MainTimersPage implements OnInit {
   }
 
   // Circuit control
-  circuitHideShow(id: number){
+  circuitHideShowGroup(id: number){
     if (this.cajas[id].circuitState === 11) {
       this.changeCircuitState(id, 10);
       const cajasToHide = this.cajas.filter(caja => caja.groupId === this.cajas[id].groupId && caja.type === 'timer');
@@ -497,9 +490,9 @@ export class MainTimersPage implements OnInit {
 
       if ( this.cajas[id].counting === true ){
         this.pause(id);
-      } else{
+      } else {
         const saveCountingValue = this.cajas[id].countingValue;
-        if (this.playPage === true) {
+        if (this.thePage.playpage === true) {
           for (const c of this.cajas) {
             this.reset(c.id);
           }
@@ -534,6 +527,17 @@ export class MainTimersPage implements OnInit {
         this.play(idToPlay);
       }
     }
+  }
+
+  // Page settings
+  async settingsPopover(ev: any) {
+    const popover = await this.popoverController.create({
+      component: SettingsPopoverComponent,
+      cssClass: 'my-custom-class',
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
   }
 
 }

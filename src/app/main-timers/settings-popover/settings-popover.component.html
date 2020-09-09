@@ -1,9 +1,11 @@
 
 <ion-item>
-  Play Page
-  <ion-toggle slot="end" (ionChange)="showPlayPage($event)"></ion-toggle>
+  Play page 
+  <ion-toggle slot="end" [hidden]="thePage.playpage===true" checked="false"  (ionChange)="setPlayPage($event)"></ion-toggle>
+  <ion-toggle slot="end" [hidden]="thePage.playpage===false" checked="true" (ionChange)="setPlayPage($event)"></ion-toggle>
 </ion-item>
 <ion-item>
-  Speech
-  <ion-toggle slot="end"></ion-toggle>
+  Speech 
+  <ion-toggle slot="end" [hidden]="thePage.speech===true" checked="false"  (ionChange)="setSpeech($event)"></ion-toggle>
+  <ion-toggle slot="end" [hidden]="thePage.speech===false" checked="true" (ionChange)="setSpeech($event)"></ion-toggle>
 </ion-item>
