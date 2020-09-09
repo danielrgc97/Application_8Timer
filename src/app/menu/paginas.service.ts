@@ -35,22 +35,25 @@ export class PaginasService {
       this.paginas[i] = ps[i];
     }
     this.setObjects();
+    this.ngOnInitEventEmit();
   }
   setThePage(id: number) {
     this.thePage = id;
+    this.ngOnInitEventEmit();
   }
   getThePage() {
     return this.paginas[this.thePage];
   }
   setPlayPage(bol: boolean) {
     this.paginas[this.thePage].playpage = bol;
-    this.volcarPages(this.paginas);
-    this.ngOnInitEventEmit();
   }
   setSpeech(bol: boolean) {
     this.paginas[this.thePage].speech = bol;
     this.volcarPages(this.paginas);
-    this.ngOnInitEventEmit();
+  }
+  deletePage(id: number){
+    this.paginas.splice(id, 1);
+    this.volcarPages(this.paginas);
   }
 
   // Funciones gestion de almacenamiento

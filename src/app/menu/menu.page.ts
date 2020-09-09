@@ -5,6 +5,7 @@ import { PaginasService } from './paginas.service';
 
 import { AlertController } from '@ionic/angular';
 import { MainTimersPage } from '../main-timers/main-timers.page';
+import { CajasService } from '../main-timers/cajas.service';
 
 @Component({
   selector: 'app-menu',
@@ -16,23 +17,33 @@ export class MenuPage implements OnInit {
   paginas: Page[];
 
 
-  constructor( public alertController: AlertController, private router: Router, private paginasService: PaginasService) {}
+  constructor( public alertController: AlertController, private router: Router,
+               private paginasService: PaginasService, private cajasService: CajasService) {}
 
   ngOnInit( ) {
+    // if (this.paginasService.subsVar === undefined) {
+    //   this.paginasService.subsVar = this.paginasService.
+    //   invokeNgOnInit.subscribe((name: string) => {
+    //     this.ngOnInit();
+    //   });
+    // }
+
     this.paginasService.getObjects().then( _ => {
       this.paginas = this.paginasService.getAllPages();
     });
   }
 
   addPage(name: string) {
+    const newId = this.paginas.length;
     this.paginas.push({
-      id: this.paginas.length,
+      id: newId,
       name,
       playpage: false,
       speech: false
     });
-
+    this.paginasService.setThePage(newId);
     this.paginasService.volcarPages(this.paginas);
+    // this.cajasService.setObjects();
   }
 
   async createPageAlert(){
@@ -65,7 +76,6 @@ export class MenuPage implements OnInit {
 
   pageSelected(id: number) {
     this.paginasService.setThePage(id);
-    this.paginasService.ngOnInitEventEmit();
   }
 
 

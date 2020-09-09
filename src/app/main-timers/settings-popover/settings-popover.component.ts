@@ -31,5 +31,9 @@ export class SettingsPopoverComponent implements OnInit {
     return this.paginasService.getThePage().playpage;
   }
 
+  deletePage() {
+    this.paginasService.deletePage(this.thePage.id);
+  }
+
 
 }

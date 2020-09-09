@@ -34,21 +34,21 @@ export class CajasService {
 
   async getObjects() {
     this.thePage = this.paginasService.getThePage();
-    if (this.thePage !== undefined) {
-      const s = await Storage.get({ key: this.thePage.name });
-      const j = JSON.parse(s.value);
-      this.cajas = [];
-      if ( j != null){
-        for ( let i = 0 ; i < j.length ; i++){
-          this.cajas[i] = j[i];
-        }
-        return s;
+    const s = await Storage.get({ key: this.thePage.name });
+    const j = JSON.parse(s.value);
+    this.cajas = [];
+
+    if ( j != null){
+      for ( let i = 0 ; i < j.length ; i++){
+        this.cajas[i] = j[i];
       }
+      return s;
     }
   }
 
   async setObjects() {
     this.thePage = this.paginasService.getThePage();
+    console.log('halooooooooooooo');
     const j = [];
     if ( this.cajas != null){
       for ( let i = 0 ; i < this.cajas.length ; i++){

@@ -9,3 +9,6 @@
   <ion-toggle slot="end" [hidden]="thePage.speech===true" checked="false"  (ionChange)="setSpeech($event)"></ion-toggle>
   <ion-toggle slot="end" [hidden]="thePage.speech===false" checked="true" (ionChange)="setSpeech($event)"></ion-toggle>
 </ion-item>
+<ion-item (click)="deletePage()">
+  Delete page 
+</ion-item>
