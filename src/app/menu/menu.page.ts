@@ -15,6 +15,7 @@ import { CajasService } from '../main-timers/cajas.service';
 export class MenuPage implements OnInit {
 
   paginas: Page[];
+  thePageId: number;
 
 
   constructor( public alertController: AlertController, private router: Router,
@@ -30,6 +31,7 @@ export class MenuPage implements OnInit {
 
     this.paginasService.getObjects().then( _ => {
       this.paginas = this.paginasService.getAllPages();
+      this.thePageId = this.paginasService.getThePage().id;
     });
   }
 
@@ -43,7 +45,7 @@ export class MenuPage implements OnInit {
     });
     this.paginasService.setThePage(newId);
     this.paginasService.volcarPages(this.paginas);
-    // this.cajasService.setObjects();
+    this.ngOnInit();
   }
 
   async createPageAlert(){
@@ -64,7 +66,10 @@ export class MenuPage implements OnInit {
         {
           text: 'Create',
           handler: (data) => {
-            this.addPage(data.name);
+            if (data.name === ''){
+            } else {
+              this.addPage(data.name);
+            }
           }
         }
       ]
@@ -76,6 +81,7 @@ export class MenuPage implements OnInit {
 
   pageSelected(id: number) {
     this.paginasService.setThePage(id);
+    this.ngOnInit();
   }
 
 
