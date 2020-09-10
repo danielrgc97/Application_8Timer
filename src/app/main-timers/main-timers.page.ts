@@ -12,6 +12,7 @@ import { SettingsPopoverComponent } from './settings-popover/settings-popover.co
 import { Page } from '../menu/page.model';
 
 
+
 @Component({
   selector: 'app-main-timers',
   templateUrl: './main-timers.page.html',
