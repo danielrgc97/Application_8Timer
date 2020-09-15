@@ -352,6 +352,7 @@ export class MainTimersPage implements OnInit {
     for (const c of this.cajas) {
       this.reset(this.cajas[c.id].id);
     }
+    this.thePage.countingLaps = 1;
     this.timeLeft(0);
     this.displayTimeLeft();
   }
@@ -605,12 +606,16 @@ export class MainTimersPage implements OnInit {
       // caso acabar pagina
       if (this.cajas[id].id === (this.cajas.length - 1)) {
         // caso reproducir pagina de nuevo
-        if (this.thePage.countingLaps < this.thePage.laps) {
-            let i = 0;
-            while (this.cajas[i].type !== 'timer' || i > this.cajas.length) {
-              i++;
-            }
-            idToPlay = i;
+        // if (idToPlay === -1 && this.thePage.countingLaps >= this.thePage.laps) {
+        //   this.resetPage();
+        // }
+        if (idToPlay === -1 && this.thePage.countingLaps < this.thePage.laps) {
+          this.paginasService.setCountingLaps( ++this.thePage.countingLaps);
+          let i = 0;
+          while (this.cajas[i].type !== 'timer' || i > this.cajas.length) {
+            i++;
+          }
+          idToPlay = i;
         }
       } else {
         // caso reproducir siguiente grupo
@@ -624,46 +629,54 @@ export class MainTimersPage implements OnInit {
         }
       }
 
-
       if (idToPlay !== -1) {
         this.play(idToPlay);
       }
-
 
     }
   }
   timeLeft(id: number) {
     let time = 0;
+    let h = this.thePage.countingLaps;
     let i = this.cajas[id].groupId;
     let j = this.cajas[this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 1)].circuitDoingLap;
     let k = id;
-    for ( i ; i <= this.cajas[this.cajas.length - 1].groupId; i++) {
-      let tam = 0;
-      for (const c of this.cajas) {
-        if (c.groupId === i) { tam++; }
-      }
-      if (tam === 1) {
-        const cajaId = this.cajas.findIndex(caja => caja.groupId === i );
-        if (this.cajas[cajaId].type === 'timer') {time = time + this.cajas[k].countingValue; }
-        let b = false;
-        while (++k < this.cajas.length && b) {
-          if (this.cajas[k].type === 'timer') { b = true; }
+    for ( h; h <= this.thePage.laps; h++) {
+      for ( i ; i <= this.cajas[this.cajas.length - 1].groupId; i++) {
+        let tam = 0;
+        for (const c of this.cajas) {
+          if (c.groupId === i) { tam++; }
         }
-      }
-      if (tam > 1) {
-        const lastId = this.cajas.findIndex(caja => caja.groupId === i && caja.circuitState === 3);
-        for ( j; j <= this.cajas[this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 1)].circuitLaps; j++) {
-          for (k; k <= lastId; k++) {
-            time = time + this.cajas[k].countingValue;
+        if (tam === 1) {
+          const cajaId = this.cajas.findIndex(caja => caja.groupId === i );
+          if (this.cajas[cajaId].type === 'timer') {time = time + this.cajas[k].countingValue; }
+          let b = false;
+          while (++k < this.cajas.length && b) {
+            if (this.cajas[k].type === 'timer') { b = true; }
           }
-          k = this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 2);
         }
-        j = 1;
-        let b = false;
-        while (++k < this.cajas.length && b) {
-          if (this.cajas[k].type === 'timer') { b = true; }
+        if (tam > 1) {
+          const lastId = this.cajas.findIndex(caja => caja.groupId === i && caja.circuitState === 3);
+          for ( j; j <= this.cajas[this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 1)].circuitLaps; j++) {
+            for (k; k <= lastId; k++) {
+              time = time + this.cajas[k].countingValue;
+            }
+            k = this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 2);
+          }
+          j = 1;
+          let b = false;
+          while (++k < this.cajas.length && b) {
+            if (this.cajas[k].type === 'timer') { b = true; }
+          }
         }
       }
+      i = 0;
+      let a = false;
+      k = -1;
+      while (++k < this.cajas.length && a) {
+        if (this.cajas[k].type === 'timer') { a = true; }
+      }
+      console.log(h, time);
     }
     this.thePage.timeleft = time;
   }

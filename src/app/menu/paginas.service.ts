@@ -60,6 +60,10 @@ export class PaginasService {
     this.paginas[this.thePage].laps = laps;
     this.volcarPages(this.paginas);
   }
+  setCountingLaps( laps: number) {
+    this.paginas[this.thePage].countingLaps = laps;
+    this.volcarPages(this.paginas);
+  }
   deletePage(id: number){
     this.setThePage(0);
     this.paginas.splice(id, 1);
