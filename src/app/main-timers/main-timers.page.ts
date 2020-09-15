@@ -53,8 +53,10 @@ export class MainTimersPage implements OnInit {
         this.cajas = this.cajasService.getAllCajas();
         this.thePage = this.paginasService.getThePage();
         this.playpage = this.thePage.playpage;
-        this.timeLeft(0);
-        this.displayTimeLeft();
+        if (this.cajas.length !== 0) {
+          this.timeLeft(0);
+          this.displayTimeLeft();
+        }
       });
     });
   }
@@ -399,7 +401,10 @@ export class MainTimersPage implements OnInit {
     this.magic();
   }
   drag(id: number) {
-    if (this.cajas[id].circuitState === 11) {this.circuitHideShowGroup(id); }
+    if (this.cajas[id].circuitState > 9) {
+      // this.circuitHideShowGroup(id);
+      this.ngOnInit();
+    }
     this.reset(id);
   }
   moveCajas(fromId: number, toId: number) {
@@ -599,7 +604,6 @@ export class MainTimersPage implements OnInit {
 
     }
   }
-
   timeLeft(id: number) {
     let time = 0;
     let i = this.cajas[id].groupId;
@@ -613,11 +617,10 @@ export class MainTimersPage implements OnInit {
       if (tam === 1) {
         const cajaId = this.cajas.findIndex(caja => caja.groupId === i );
         if (this.cajas[cajaId].type === 'timer') {time = time + this.cajas[k].countingValue; }
-        k++;
-        while (this.cajas[k].type !== 'timer' || k >= this.cajas.length) {
-          k++;
+        let b = false;
+        while (++k < this.cajas.length && b) {
+          if (this.cajas[k].type === 'timer') { b = true; }
         }
-
       }
       if (tam > 1) {
         const lastId = this.cajas.findIndex(caja => caja.groupId === i && caja.circuitState === 3);
@@ -628,9 +631,9 @@ export class MainTimersPage implements OnInit {
           k = this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 2);
         }
         j = 1;
-        k++;
-        while (this.cajas[k].type !== 'timer' || k >= this.cajas.length) {
-          k++;
+        let b = false;
+        while (++k < this.cajas.length && b) {
+          if (this.cajas[k].type === 'timer') { b = true; }
         }
       }
     }
