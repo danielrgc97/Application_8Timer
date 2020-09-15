@@ -19,9 +19,9 @@
   <div *ngIf="playpage === true" class="invisiblePlaypageBackBlock"></div>
   <div *ngIf="playpage === true" class="playpageContainer" slot="fixed">
     <div class = "pageName"> {{thePage.name}}</div>
-    <div class = "totalTimeLeft"> Time left: {{thePage.timeleft}} </div>
+    <div class = "totalTimeLeft"> Time left: {{thePage.stringDisplayed}} </div>
     <div class="playpageButtons">
-      <ion-button color="light" fill="clear" size="small" (click)="controller( 0, 1)"><ion-icon class="caja-buttons" [name]="true ? 'play-outline' : 'pause-outline'"></ion-icon></ion-button>
+      <ion-button color="light" fill="clear" size="small" (click)="playpausePage()"><ion-icon class="caja-buttons" [name]="!playingpage ? 'play-outline' : 'pause-outline'"></ion-icon></ion-button>
       <ion-button color="light" fill="clear" size="small" (click)="resetPage()"><ion-icon class="caja-buttons" name="refresh-outline"></ion-icon></ion-button>
     </div>
     <div class = "playpageLaps">Lap 1 of 1</div>

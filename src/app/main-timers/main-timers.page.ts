@@ -27,6 +27,8 @@ export class MainTimersPage implements OnInit {
   playpage = null;
   thePage: Page;
   private speech: any;
+  playingpage = false;
+  timerPlaying = 0;
 
 
   constructor( private router: Router , public alertController: AlertController,
@@ -51,6 +53,8 @@ export class MainTimersPage implements OnInit {
         this.cajas = this.cajasService.getAllCajas();
         this.thePage = this.paginasService.getThePage();
         this.playpage = this.thePage.playpage;
+        this.timeLeft(0);
+        this.displayTimeLeft();
       });
     });
   }
@@ -269,30 +273,27 @@ export class MainTimersPage implements OnInit {
   }
 
   // Timer controls
-  playpause(id: number){
-    if ( this.cajas[id].counting === true ){
-      this.pause(id);
-    } else{
-      this.play(id);
-    }
-  }
   play(id: number){
     this.speech.cancel();
     const sound = new Howl({
-      src: ['../../assets/beeps/beep-30b.mp3']
+      src: ['../../assets/beeps/beep-02.mp3']
     });
     if (this.thePage.speech === true && this.cajas[id].countingValue === this.cajas[id].timerValue) {
-      // this.tts.speak(this.cajas[id].timerName);
-      this.speech.speak({ text: this.cajas[id].timerName, });
+      this.tts.speak(this.cajas[id].timerName);
+      // this.speech.speak({ text: this.cajas[id].timerName, });
     }
 
+    this.playingpage = true;
+    this.timerPlaying = id;
     this.cajas[id].counting = true;
     --this.cajas[id].countingValue;
     this.displayStringFormer(id);
+    this.displayTimeLeft();
     this.cajas[id].interval = setInterval(() => {
       --this.cajas[id].countingValue;
       --this.thePage.timeleft;
       this.displayStringFormer(id);
+      this.displayTimeLeft();
       if ( this.cajas[id].countingValue < 0){
         this.controller(id, 0);
         sound.play();
@@ -303,6 +304,7 @@ export class MainTimersPage implements OnInit {
     clearInterval(this.cajas[id].interval);
     this.cajas[id].counting = false;
     this.magic();
+    this.playingpage = false;
   }
   reset(id: number){
     this.cajas[id].countingValue = this.cajas[id].timerValue;
@@ -320,6 +322,8 @@ export class MainTimersPage implements OnInit {
     for (const c of this.cajas) {
       this.reset(this.cajas[c.id].id);
     }
+    this.timeLeft(0);
+    this.displayTimeLeft();
   }
 
   // Caja controls
@@ -416,26 +420,40 @@ export class MainTimersPage implements OnInit {
   }
   displayStringFormer(id: number){
     if (this.cajas[id].countingValue !== null){
-      const h = Math.floor(this.cajas[id].countingValue / 3600 );
-      const m = Math.floor(this.cajas[id].countingValue % 3600 / 60);
-      const s = Math.floor(this.cajas[id].countingValue % 3600 % 60);
-
-      let mm = '';
-      let ss = '';
-      if ( s < 10 ) { ss = '0' + s; } else { ss = '' + s; }
-      if ( m < 10 ) { mm = '0' + m; } else { mm = '' + m; }
-
-      if ( h === 0 ) {
-        this.cajas[id].displayString = m + ':' + ss;
-      } else {
-        this.cajas[id].displayString = h + ':' + mm + ':' + ss;
-      }
-      // this.magic();
-
+      this.cajas[id].displayString = this.stringFormer(this.cajas[id].countingValue);
     }
+  }
+  displayTimeLeft() {
+    this.thePage.stringDisplayed = this.stringFormer(this.thePage.timeleft);
+  }
+  stringFormer(seconds: number) {
+    const h = Math.floor(seconds / 3600 );
+    const m = Math.floor(seconds % 3600 / 60);
+    const s = Math.floor(seconds % 3600 % 60);
+
+    let mm = '';
+    let ss = '';
+    if ( s < 10 ) { ss = '0' + s; } else { ss = '' + s; }
+    if ( m < 10 ) { mm = '0' + m; } else { mm = '' + m; }
+
+    if ( h === 0 ) {
+      return m + ':' + ss;
+    } else {
+      return h + ':' + mm + ':' + ss;
+    }
+
   }
 
   // Circuit control
+  playpausePage(id: number){
+    if ( this.playingpage === true ){
+      this.controller(this.timerPlaying, 1);
+      // this.pause(this.timerPlaying);
+    } else {
+      this.controller(this.timerPlaying, 1);
+      // this.play(this.timerPlaying);
+    }
+  }
   circuitHideShowGroup(id: number){
     if (this.cajas[id].circuitState === 11) {
       this.changeCircuitState(id, 10);
@@ -522,15 +540,16 @@ export class MainTimersPage implements OnInit {
         const saveCountingValue = this.cajas[id].countingValue;
         if (this.thePage.playpage === true) {
           for (const c of this.cajas) {
-            this.reset(c.id);
+            if (this.cajas[c.id].type === 'timer') { this.reset(c.id); }
           }
         }
         const timersToReset = this.cajas.filter(caja => caja.groupId === this.cajas[id].groupId);
         for (const t of timersToReset) {
-          this.reset(t.id);
+          if (this.cajas[t.id].type === 'timer') { this.reset(t.id); }
         }
         this.cajas[id].countingValue = saveCountingValue;
         this.timeLeft(id);
+        // --this.thePage.timeleft;
         this.play(id);
       }
     } else {
@@ -594,10 +613,6 @@ export class MainTimersPage implements OnInit {
       if (tam === 1) {
         const cajaId = this.cajas.findIndex(caja => caja.groupId === i );
         if (this.cajas[cajaId].type === 'timer') {time = time + this.cajas[k].countingValue; }
-        console.log(i, j, k, 'alone', time);
-
-
-        // k = this.cajas.findIndex(caja => caja.groupId === i + 1 && caja.circuitPos === 2);
         k++;
         while (this.cajas[k].type !== 'timer' || k >= this.cajas.length) {
           k++;
@@ -609,7 +624,6 @@ export class MainTimersPage implements OnInit {
         for ( j; j <= this.cajas[this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 1)].circuitLaps; j++) {
           for (k; k <= lastId; k++) {
             time = time + this.cajas[k].countingValue;
-            console.log(i, j, k, 'group', time);
           }
           k = this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 2);
         }
