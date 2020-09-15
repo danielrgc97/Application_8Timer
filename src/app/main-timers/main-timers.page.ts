@@ -270,7 +270,7 @@ export class MainTimersPage implements OnInit {
 
   // Timer controls
   playpause(id: number){
-    if ( this.cajas[id].counting === true ){
+    if ( this.cajas[id].counting === true ){ 
       this.pause(id);
     } else{
       this.play(id);
