@@ -62,7 +62,7 @@ export class PaginasService {
   }
   setCountingLaps( laps: number) {
     this.paginas[this.thePage].countingLaps = laps;
-    this.volcarPages(this.paginas);
+    this.setObjects();
   }
   deletePage(id: number){
     this.setThePage(0);
@@ -71,8 +71,7 @@ export class PaginasService {
     this.menuNgOnInit();
   }
 
-  // Funciones gestion de almacenamiento
-
+  // Gestion de almacenamiento
   async getObjects() {
     const s = await Storage.get({ key: 'MenuPages' });
     const j = JSON.parse(s.value);
@@ -90,7 +89,6 @@ export class PaginasService {
     if (this.thePage === undefined) { this.thePage = 0; }
     return s;
   }
-
   async setObjects() {
     const j = [];
     if ( this.paginas != null){
@@ -101,5 +99,6 @@ export class PaginasService {
     await Storage.set({key: 'MenuPages', value: JSON.stringify(j)
     });
   }
+
 
 }

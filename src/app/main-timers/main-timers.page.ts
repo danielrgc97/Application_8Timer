@@ -39,7 +39,6 @@ export class MainTimersPage implements OnInit {
                   this.speech.init();
                   this.speech.setLanguage('en-US');
                 }
-
   ngOnInit() {
     if (this.paginasService.subsMain === undefined) {
       this.paginasService.subsMain = this.paginasService.
@@ -57,10 +56,15 @@ export class MainTimersPage implements OnInit {
           this.timeLeft(0);
           this.displayTimeLeft();
         }
+        let a = true;
+        let i = -1;
+        while (++i < this.cajas.length && a) {
+          if (this.cajas[i].type === 'timer') { a = false; }
+        }
+        this.timerPlaying = i - 1;
       });
     });
   }
-
 
 
   // Alerts
@@ -304,6 +308,7 @@ export class MainTimersPage implements OnInit {
 
   // Timer controls
   play(id: number){
+
     this.speech.cancel();
     const sound = new Howl({
       src: ['../../assets/beeps/beep-02.mp3']
@@ -319,12 +324,15 @@ export class MainTimersPage implements OnInit {
     --this.cajas[id].countingValue;
     this.displayStringFormer(id);
     this.displayTimeLeft();
+
+    clearInterval(this.cajas[id].interval);
     this.cajas[id].interval = setInterval(() => {
       --this.cajas[id].countingValue;
       --this.thePage.timeleft;
       this.displayStringFormer(id);
       this.displayTimeLeft();
       if ( this.cajas[id].countingValue < 0){
+        this.reset(id);
         this.controller(id, 0);
         sound.play();
       }
@@ -349,6 +357,12 @@ export class MainTimersPage implements OnInit {
     }
   }
   resetPage(){
+    let a = true;
+    let i = -1;
+    while (++i < this.cajas.length && a) {
+      if (this.cajas[i].type === 'timer') { a = false; }
+    }
+    this.timerPlaying = i - 1;
     for (const c of this.cajas) {
       this.reset(this.cajas[c.id].id);
     }
@@ -564,10 +578,10 @@ export class MainTimersPage implements OnInit {
     }
 
     this.cajasService.volcarCajas(this.cajas);
-    // orderEverythingAndSave
   }
   controller(id: number, flag: number) { // Es llapada al empezar y acabar un timer
     if ( flag === 1 ) {
+
       if ( this.cajas[id].counting === true ){
         this.pause(id);
       } else {
@@ -586,51 +600,61 @@ export class MainTimersPage implements OnInit {
         // --this.thePage.timeleft;
         this.play(id);
       }
+
     } else {
+
       this.reset(id);
       const timer = this.cajas[id];
-      const circuit = this.cajas[this.cajas.findIndex(caja => caja.groupId === timer.groupId)];
+      const circuit = this.cajas[this.cajas.findIndex(caja => caja.groupId === timer.groupId && caja.circuitPos === 1)];
 
-      let idToPlay = id + 1;
+      let idToPlay = -5;
+      // -1 siguiente grupo/timer
+      // -2 continuar circuito
+      // -3 primero de circuito
+      // -4 primero de pagina
+      // -5 END
 
-      // caso timer standalone
-      if (timer.circuitState === 0) { idToPlay = -1; }
-      // caso reproduce circuito
-      if (timer.circuitState === 3 && circuit.circuitDoingLap >= circuit.circuitLaps) {
+      // Calcula estado
+      if (timer.circuitState === 0 && this.thePage.playpage === true) { idToPlay = -1; }
+      if (timer.circuitState === 3 && circuit.circuitDoingLap >= circuit.circuitLaps  && this.thePage.playpage === true) {
         idToPlay = -1;
         this.cajas[circuit.id].circuitDoingLap = 1;
       } else if (timer.circuitState === 3) {
-        idToPlay = circuit.id + 1;
+        idToPlay = -3;
         ++this.cajas[circuit.id].circuitDoingLap;
+      } else if ( timer.circuitState === 1 || timer.circuitState === 2 ) {
+        idToPlay = -2;
       }
-      // caso acabar pagina
-      if (this.cajas[id].id === (this.cajas.length - 1)) {
-        // caso reproducir pagina de nuevo
-        // if (idToPlay === -1 && this.thePage.countingLaps >= this.thePage.laps) {
-        //   this.resetPage();
-        // }
-        if (idToPlay === -1 && this.thePage.countingLaps < this.thePage.laps) {
-          this.paginasService.setCountingLaps( ++this.thePage.countingLaps);
-          let i = 0;
-          while (this.cajas[i].type !== 'timer' || i > this.cajas.length) {
-            i++;
-          }
-          idToPlay = i;
-        }
-      } else {
-        // caso reproducir siguiente grupo
-        if (idToPlay === -1 && this.thePage.playpage === true) {
-            let i = id + 1;
-            while (this.cajas[i].type !== 'timer' || i > this.cajas.length) {
-              i++;
-            }
-            if (i > this.cajas.length) {i = -1; }
-            idToPlay = i;
-        }
+      if (idToPlay === -1 && this.cajas[id].id === (this.cajas.length - 1) ) {
+        if (this.thePage.countingLaps >= this.thePage.laps) { idToPlay = -5; }
+        if (this.thePage.countingLaps < this.thePage.laps) { this.thePage.countingLaps++; idToPlay = -4; }
       }
 
-      if (idToPlay !== -1) {
-        this.play(idToPlay);
+      // Asigna comportamiento
+      if (idToPlay === -1) {
+        let a = true;
+        let i = id;
+        while (++i < this.cajas.length && a) {
+          if (this.cajas[i].type === 'timer') { a = false; }
+        }
+        idToPlay = i - 1;
+      }
+      if (idToPlay === -2) {idToPlay = id + 1; }
+      if (idToPlay === -3) {idToPlay = circuit.id + 1; }
+      if (idToPlay === -4) {
+        this.paginasService.setCountingLaps(this.thePage.countingLaps);
+        let a = false;
+        let i = -1;
+        while (++i < this.cajas.length && a) {
+          if (this.cajas[i].type === 'timer') { a = true; }
+        }
+        idToPlay = i;
+      }
+      if (idToPlay === -5) {
+        this.thePage.countingLaps = 1;
+        this.paginasService.setCountingLaps(this.thePage.countingLaps);
+      } else {
+        this.controller(idToPlay, 1);
       }
 
     }
@@ -650,6 +674,7 @@ export class MainTimersPage implements OnInit {
         if (tam === 1) {
           const cajaId = this.cajas.findIndex(caja => caja.groupId === i );
           if (this.cajas[cajaId].type === 'timer') {time = time + this.cajas[k].countingValue; }
+          // MAL
           let b = false;
           while (++k < this.cajas.length && b) {
             if (this.cajas[k].type === 'timer') { b = true; }
@@ -664,6 +689,7 @@ export class MainTimersPage implements OnInit {
             k = this.cajas.findIndex(caja => caja.groupId === i && caja.circuitPos === 2);
           }
           j = 1;
+          // MAL
           let b = false;
           while (++k < this.cajas.length && b) {
             if (this.cajas[k].type === 'timer') { b = true; }
@@ -671,12 +697,12 @@ export class MainTimersPage implements OnInit {
         }
       }
       i = 0;
+      // MAL
       let a = false;
       k = -1;
       while (++k < this.cajas.length && a) {
         if (this.cajas[k].type === 'timer') { a = true; }
       }
-      console.log(h, time);
     }
     this.thePage.timeleft = time;
   }
