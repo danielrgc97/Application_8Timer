@@ -62,7 +62,6 @@ export class MainTimersPage implements OnInit {
     });
   }
 
-
   // Alerts
   async createCajaTimerAlert(){
     const alert = await this.alertController.create({
@@ -108,7 +107,6 @@ export class MainTimersPage implements OnInit {
               let totalTimeValue =  data.hours * 3600 + data.minutes * 60 + 1 * data.seconds;
               if (totalTimeValue === 0){ totalTimeValue = 1; }
               this.addCaja( 'timer', data.name, totalTimeValue, null, null);
-              this.ngOnInit();
             }
           }
         }
@@ -156,8 +154,9 @@ export class MainTimersPage implements OnInit {
             if ((data.hours > 9 || data.hours < 0) || (data.minutes > 59 || data.minutes < 0) ||
              (data.seconds > 59 || data.seconds < 0) ) {
               this.editCajaTimerAlert(id);
-              this.basicAlert('Introduce allowed values');
+              this.basicAlert('Wrong values');
             } else {
+              this.resetPage();
               let h = Math.floor(this.cajas[id].timerValue / 3600 );
               let m = Math.floor(this.cajas[id].timerValue % 3600 / 60);
               let s = Math.floor(this.cajas[id].timerValue % 3600 % 60);
@@ -170,8 +169,8 @@ export class MainTimersPage implements OnInit {
               const totalTimeValue =  h * 3600 + m * 60 + 1 * s;
               this.cajas[id].timerValue = totalTimeValue;
               this.cajas[id].countingValue = totalTimeValue;
-              // this.displayStringFormer(id);
               this.magic();
+              this.resetPage();
             }
           }
         }
@@ -245,13 +244,14 @@ export class MainTimersPage implements OnInit {
         {
           text: 'Confirm',
           handler: (data) => {
-            if (data.laps > 999 || data.laps < 0){
+            if (data.laps > 99 || data.laps < 0){
               this.editCajaCircuitAlert(id);
-              this.basicAlert('Introduce allowed values');
+              this.basicAlert('Wrong values');
             }else{
               if ( data.name !== '' ) { this.cajas[id].circuitName = data.name; }
               if ( data.laps !== '' ) { this.cajas[id].circuitLaps = data.laps; }
               this.magic();
+              this.resetPage();
             }
           }
         }
@@ -520,7 +520,9 @@ export class MainTimersPage implements OnInit {
     }
   }
   displayTimeLeft() {
-    this.thePage.stringDisplayed = this.stringFormer(this.thePage.timeleft);
+    if (this.thePage.timeleft >= 0) {
+      this.thePage.stringDisplayed = this.stringFormer(this.thePage.timeleft);
+    }
   }
   stringFormer(seconds: number) {
     const h = Math.floor(seconds / 3600 );
@@ -537,7 +539,6 @@ export class MainTimersPage implements OnInit {
     } else {
       return h + ':' + mm + ':' + ss;
     }
-
   }
 
   // Circuit control
@@ -588,7 +589,7 @@ export class MainTimersPage implements OnInit {
     for (const c of this.cajas){
       if (c.groupId === oldGroup){
 
-      }else{
+      } else {
         newGroupId++;
       }
       oldGroup = c.groupId;
@@ -645,7 +646,7 @@ export class MainTimersPage implements OnInit {
         }
         this.cajas[id].countingValue = saveCountingValue;
         this.timeLeft(id);
-        // --this.thePage.timeleft;
+        --this.thePage.timeleft;
         this.play(id);
       }
 
