@@ -20,7 +20,10 @@
   <div *ngIf="playpage === true" class="playpageContainer" slot="fixed">
     <div class = "pageName"> {{thePage.name}}</div>
     <div class = "totalTimeLeft"> Time left: {{thePage.stringDisplayed}} </div>
-    <div class = "playpageLaps"><ion-button fill="clear" color="light" (click)="editPageLapsAlert()" >Lap {{thePage.countingLaps}} of {{thePage.laps}} </ion-button></div>
+    <div class = "playpageLaps">
+      <ion-button *ngIf="thePage.laps == 1" fill="clear" color="light" (click)="editPageLapsAlert()" > One lap </ion-button>
+      <ion-button *ngIf="thePage.laps > 1" fill="clear" color="light" (click)="editPageLapsAlert()" >Lap {{thePage.countingLaps}} of {{thePage.laps}} </ion-button>
+    </div>
     <div class="playpageButtons">
       <ion-button color="light" fill="clear" size="small" (click)="playpausePage()"><ion-icon class="caja-buttons" [name]="!playingpage ? 'play-outline' : 'pause-outline'"></ion-icon></ion-button>
       <ion-button color="light" fill="clear" size="small" (click)="resetPage()"><ion-icon class="caja-buttons" name="refresh-outline"></ion-icon></ion-button>
@@ -51,7 +54,8 @@
       <!-- Tipo circuito activado -->
       <div *ngIf="c.role==='circuit'" >
         <span class="circuitNombre" >{{c.circuitName}}</span>
-        <span class="circuitLaps"> {{c.circuitDoingLap}} of {{c.circuitLaps}} Laps </span>
+        <span *ngIf="c.circuitLaps == 1" class="circuitLaps"> One lap </span>
+        <span *ngIf="c.circuitLaps > 1" class="circuitLaps"> {{c.circuitDoingLap}} of {{c.circuitLaps}} Laps </span>
         <ion-button class="buttonCajaCircuitEdit" fill="clear" (click)="editCajaCircuitAlert(i)"></ion-button>
         <ion-button class='flechaCircuit' fill="clear" size="small" (click)="circuitHideShowGroup(i)"><ion-icon color="light" [name]="c.circuitState===10 ? 'chevron-forward-outline' : 'chevron-down-outline'"></ion-icon></ion-button>
         <ion-button class="resetCircuit" color="light" fill="clear" size="small" (click)="resetGroup(c.groupId)"><ion-icon class="caja-buttons" name="refresh-outline"></ion-icon></ion-button>
