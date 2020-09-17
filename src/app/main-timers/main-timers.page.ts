@@ -422,15 +422,22 @@ export class MainTimersPage implements OnInit {
   drop(event: CdkDragDrop<string[]>) {
     const from = event.previousIndex;
     let to = event.currentIndex;
+
+    // Corrige ids
     if (event.currentIndex > event.previousIndex && this.cajas[event.currentIndex].circuitState === 10) {
-      to = this.cajas.findIndex(caja => caja.groupId === this.cajas[event.currentIndex].groupId && caja.circuitState === 3);
+      if (this.cajas.filter(caja => caja.id ===  this.cajas[event.currentIndex].groupId).length > 1 ) {
+        to = this.cajas.findIndex(caja => caja.groupId === this.cajas[event.currentIndex].groupId && caja.circuitState === 3);
+      }
     }
     if (to > 0) {
       if (event.currentIndex < event.previousIndex && this.cajas[event.currentIndex - 1].circuitState === 10) {
-        to = this.cajas.findIndex(caja => caja.groupId === this.cajas[event.currentIndex - 1].groupId && caja.circuitState === 3);
+        if (this.cajas.filter(caja => caja.id ===  this.cajas[event.currentIndex - 1].groupId).length > 1 ) {
+          to = this.cajas.findIndex(caja => caja.groupId === this.cajas[event.currentIndex - 1].groupId && caja.circuitState === 3);
+        }
       }
     }
 
+    // Mueve timers
     if (this.cajas[from].type === 'timer') {
 
       this.moveCajas(from, to);
@@ -447,19 +454,20 @@ export class MainTimersPage implements OnInit {
 
     } else {
 
+    // Mueve circuitos
       if (from > to) {
         let posToMove = to;
         const cajasToMove = this.cajas.filter( caja => caja.groupId === this.cajas[from].groupId);
         for (const c of cajasToMove) {
           this.moveCajas( c.id, posToMove++);
-          if (this.cajas[posToMove].circuitState === 1 || this.cajas[posToMove].circuitState === 2 ||
-            this.cajas[posToMove].circuitState === 3 ) {
-            let newId = 900;
-            let i = posToMove;
-            do{
-              this.cajas[ i ].groupId = newId++;
-            } while (this.cajas[i++].circuitState !== 3);
-          }
+        }
+        if (this.cajas[posToMove].circuitState === 1 || this.cajas[posToMove].circuitState === 2 ||
+          this.cajas[posToMove].circuitState === 3 ) {
+          let newId = 900;
+          let i = posToMove;
+          do{
+            this.cajas[ i ].groupId = newId++;
+          } while (this.cajas[i++].circuitState !== 3);
         }
       } else  if (to > from) {
         const numberOfCajasToMove = this.cajas.filter( caja => caja.groupId === this.cajas[from].groupId).length;
@@ -693,6 +701,7 @@ export class MainTimersPage implements OnInit {
         this.resetPage();
         this.paginasService.setCountingLaps(this.thePage.countingLaps);
       } else {
+        console.log(idToPlay);
         this.controller(idToPlay, 1);
       }
 
