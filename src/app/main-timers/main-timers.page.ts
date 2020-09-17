@@ -373,6 +373,7 @@ export class MainTimersPage implements OnInit {
       this.reset(this.cajas[c.id].id);
     }
     this.thePage.countingLaps = 1;
+    this.paginasService.setCountingLaps(this.thePage.countingLaps);
     this.timeLeft(0);
     this.displayTimeLeft();
   }
@@ -655,10 +656,10 @@ export class MainTimersPage implements OnInit {
       const circuit = this.cajas[this.cajas.findIndex(caja => caja.groupId === timer.groupId && caja.circuitPos === 1)];
 
       let idToPlay = -5;
+      // Posibles estados:
       // -1 siguiente grupo/timer
       // -2 continuar circuito
       // -3 primero de circuito
-      // -4 primero de pagina
       // -5 END
 
       // Calcula estado
@@ -672,34 +673,27 @@ export class MainTimersPage implements OnInit {
       } else if ( timer.circuitState === 1 || timer.circuitState === 2 ) {
         idToPlay = -2;
       }
-      if (idToPlay === -1 && this.cajas[id].id === (this.cajas.length - 1) ) {
-        if (this.thePage.countingLaps >= this.thePage.laps) { idToPlay = -5; }
-        if (this.thePage.countingLaps < this.thePage.laps) { this.thePage.countingLaps++; idToPlay = -4; }
-      }
 
       // Asigna comportamiento
       if (idToPlay === -1) {
         let a = true;
-        let i = id;
-        while (++i < this.cajas.length && a) {
-          if (this.cajas[i].type === 'timer') { a = false; }
+        let i = id + 1;
+        let ttl = 100;
+        while ( a ) {
+          if ( i === this.cajas.length ) {
+            i = 0; this.thePage.countingLaps++;
+          }
+          if (this.cajas[i++].type === 'timer') { a = false; }
+          if (--ttl < 0) { a = false; }
         }
         idToPlay = --i;
+        if (this.thePage.countingLaps > this.thePage.laps) { this.resetPage(); idToPlay = -5; }
       }
       if (idToPlay === -2) {idToPlay = id + 1; }
       if (idToPlay === -3) {idToPlay = circuit.id + 1; }
-      if (idToPlay === -4) {
-        this.paginasService.setCountingLaps(this.thePage.countingLaps);
-        let a = true;
-        let i = -1;
-        while (++i < this.cajas.length && a) {
-          if (this.cajas[i].type === 'timer') { a = false; }
-        }
-        idToPlay = --i;
-      }
+
       if (idToPlay === -5) {
-        this.resetPage();
-        this.paginasService.setCountingLaps(this.thePage.countingLaps);
+        console.log('Fin!');
       } else {
         console.log(idToPlay);
         this.controller(idToPlay, 1);
