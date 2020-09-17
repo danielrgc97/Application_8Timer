@@ -274,12 +274,13 @@ export class MainTimersPage implements OnInit {
         {
           text: 'Confirm',
           handler: (data) => {
-            if (data.laps > 99 || data.hours < 0) {
+            if (data.laps > 99 || data.laps < 0) {
               this.createCajaTimerAlert();
               this.basicAlert('Wrong values');
             } else {
               if ( data.lasp === '') {data.laps = this.thePage.laps; }
               this.paginasService.setLaps(data.laps);
+              this.resetPage();
             }
           }
         }
