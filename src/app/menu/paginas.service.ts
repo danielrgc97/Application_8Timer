@@ -84,7 +84,7 @@ export class PaginasService {
     }
     if (this.paginas[0] === undefined) {
       this.paginas.push(
-        { id: 0, name: 'MyFirstPage', playpage: false, speech: false, laps: 1, countingLaps: 1, timeleft: 0, stringDisplayed: '' },
+        { id: 0, name: 'My First Page', playpage: false, speech: false, laps: 1, countingLaps: 1, timeleft: 0, stringDisplayed: '' },
         { id: 1, name: 'Sample Workout', playpage: true, speech: true, laps: 1, countingLaps: 1, timeleft: 0, stringDisplayed: '' }
       );
       this.setObjects();

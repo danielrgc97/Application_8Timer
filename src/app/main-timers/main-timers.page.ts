@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Caja } from './caja.model';
 import { CajasService } from './cajas.service';
 import { AlertController, PopoverController } from '@ionic/angular';
-import {CdkDragDrop, CdkDragMove} from '@angular/cdk/drag-drop';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 
 
 import { PaginasService } from '../menu/paginas.service';
 import {Howl} from 'howler';
-import { Router, NavigationEnd } from '@angular/router';
 import { SettingsPopoverComponent } from './settings-popover/settings-popover.component';
 import { Page } from '../menu/page.model';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
@@ -22,7 +21,7 @@ import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 })
 export class MainTimersPage implements OnInit {
 
-  cajas: Caja[];
+  cajas: Caja[] = [];
   playpage = null;
   thePage: Page;
   private speech: any;
@@ -34,7 +33,8 @@ export class MainTimersPage implements OnInit {
                private cajasService: CajasService,
                private paginasService: PaginasService,
                private popoverController: PopoverController,
-               private tts: TextToSpeech) { }
+               private tts: TextToSpeech) {
+  }
   ngOnInit() {
     if (this.paginasService.subsMain === undefined) {
       this.paginasService.subsMain = this.paginasService.
@@ -43,21 +43,16 @@ export class MainTimersPage implements OnInit {
       });
     }
 
+    this.clearPage();
+
     this.paginasService.getObjects().then(_ => {
       this.cajasService.getObjects().then( __ => {
         this.cajas = this.cajasService.getAllCajas();
         this.thePage = this.paginasService.getThePage();
         this.playpage = this.thePage.playpage;
-        if (this.cajas.length !== 0) {
-          this.timeLeft(0);
-          this.displayTimeLeft();
+        if (this.cajas.length > 0) {
+          this.resetPage();
         }
-        let a = true;
-        let i = -1;
-        while (++i < this.cajas.length && a) {
-          if (this.cajas[i].type === 'timer') { a = false; }
-        }
-        this.timerPlaying = --i;
       });
     });
   }
@@ -335,7 +330,7 @@ export class MainTimersPage implements OnInit {
     }, 1000);
   }
   speechName(toSpeech: string){
-    let s = 1;
+    let s = 3;
     const interval = setInterval(() => {
       s--;
       if (s < 0)  {
@@ -368,7 +363,7 @@ export class MainTimersPage implements OnInit {
     while (++i < this.cajas.length && a) {
       if (this.cajas[i].type === 'timer') { a = false; }
     }
-    this.timerPlaying = i - 1;
+    this.timerPlaying = --i;
     for (const c of this.cajas) {
       this.reset(this.cajas[c.id].id);
     }
@@ -376,6 +371,11 @@ export class MainTimersPage implements OnInit {
     this.paginasService.setCountingLaps(this.thePage.countingLaps);
     this.timeLeft(0);
     this.displayTimeLeft();
+  }
+  clearPage() {
+    for (const c of this.cajas) {
+      clearInterval(this.cajas[c.id].interval);
+    }
   }
 
   // Caja controls

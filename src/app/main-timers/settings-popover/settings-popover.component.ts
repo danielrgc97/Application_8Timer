@@ -28,10 +28,6 @@ export class SettingsPopoverComponent implements OnInit {
     this.paginasService.setSpeech(event.detail.checked);
   }
 
-  retu(){
-    return this.paginasService.getThePage().playpage;
-  }
-
   deletePage() {
     this.paginasService.deletePage(this.thePage.id);
     this.dismissClick();
