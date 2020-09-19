@@ -27,6 +27,7 @@ export class MainTimersPage implements OnInit {
   private speech: any;
   playingpage = false;
   timerPlaying = 0;
+  beep: any;
 
 
   constructor( public alertController: AlertController,
@@ -34,6 +35,10 @@ export class MainTimersPage implements OnInit {
                private paginasService: PaginasService,
                private popoverController: PopoverController,
                private tts: TextToSpeech) {
+    this.beep = new Howl({
+      src: ['../../assets/beeps/beep-02.mp3'],
+      volume: 0.2
+    });
   }
   ngOnInit() {
     if (this.paginasService.subsMain === undefined) {
@@ -301,10 +306,7 @@ export class MainTimersPage implements OnInit {
   // Timer controls
   play(id: number){
 
-    const sound = new Howl({
-      src: ['../../assets/beeps/beep-02.mp3'],
-      volume: 0.2
-    });
+
     if (this.thePage.speech === true && this.cajas[id].countingValue === this.cajas[id].timerValue) {
       this.speechName(this.cajas[id].timerName);
     }
@@ -325,10 +327,13 @@ export class MainTimersPage implements OnInit {
       if ( this.cajas[id].countingValue < 0){
         this.reset(id);
         this.controller(id, 0);
-        sound.play();
+        this.beep.play();
       }
     }, 1000);
   }
+  identify(index, item) {
+      return item.id;
+   }
   speechName(toSpeech: string){
     let s = 3;
     const interval = setInterval(() => {

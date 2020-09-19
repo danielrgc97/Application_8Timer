@@ -34,7 +34,7 @@
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
 
     <!-- Lista con 2 tipos elementos -->
-    <div *ngFor="let c of cajas;let i = index; let last = last" class="{{c.role}}" cdkDrag (cdkDragStarted)="drag(i)" [cdkDragStartDelay]="300" >
+    <div *ngFor="let c of cajas;let i = index; trackBy: identify; let last = last" class="{{c.role}}" cdkDrag (cdkDragStarted)="drag(i)" [cdkDragStartDelay]="300" >
 
       <!-- Tipo cajas activadas -->
       <div *ngIf="c.role==='timer'">
